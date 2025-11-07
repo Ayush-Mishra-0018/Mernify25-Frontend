@@ -89,23 +89,19 @@ const Login = () => {
 
   {/* Main Content Card */}
   <div className="relative z-10 max-w-md w-full flex flex-col gap-10 md:gap-12">
-        <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 py-16 px-8 md:py-12 md:px-10 flex flex-col items-center gap-8">
+        <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50">
+          <div className="p-8 md:p-10 lg:p-12 flex flex-col items-center gap-8">
           
           {/* Logo/Icon Section */}
           <div className="flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-green-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
-              <div className="relative bg-gradient-to-br from-green-400 to-emerald-600 p-4 rounded-full">
-                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
+             <img src="/logo.png" alt="EcoSynergy Logo" className="w-16 h-16 md:w-20 md:h-20" />
             </div>
           </div>
 
           {/* Title Section */}
           <div className="text-center flex flex-col gap-2">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-400 via-emerald-500 to-teal-400 bg-clip-text text-transparent">
+            <h1 className="text-[clamp(1.75rem,8vw,2.5rem)] md:text-[clamp(2rem,5vw,3rem)] font-bold bg-linear-to-r from-green-400 via-emerald-500 to-teal-400 bg-clip-text text-transparent wrap-break-word">
               EcoSynergy
             </h1>
             <p className="text-gray-400 text-sm md:text-base">
@@ -114,14 +110,14 @@ const Login = () => {
           </div>
 
           {/* Features */}
-          <div className="flex flex-col gap-5 w-full text-gray-300">
+          <div className="flex flex-col items-center gap-5 w-full text-gray-300">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
                 <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <span>Build community initiatives</span>
+              <span>Build and join community initiatives</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -130,17 +126,9 @@ const Login = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </div>
-              <span>Smart waste management</span>
+              <span>Smart waste management powered by AI</span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-teal-500/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span>Track environmental impact</span>
-            </div>
           </div>
 
           {/* Login Button */}
@@ -159,8 +147,7 @@ const Login = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
-
-          
+          </div>
         </div>
 
   {/* Bottom decorative text */}

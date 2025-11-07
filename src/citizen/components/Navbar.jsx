@@ -19,6 +19,7 @@ const pages = [
   { name: 'Home', path: '/' },
   { name: 'AI Chat', path: '/eco-bot' },
   { name: 'My Initiatives', path: '/my-initiatives' },
+  { name: 'Explore Initiatives', path: '/community-initiatives' },
 ];
 const settings = ['Logout'];
 
