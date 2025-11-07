@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import RecyclingIcon from '@mui/icons-material/Recycling';
 import PeopleIcon from '@mui/icons-material/People';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';

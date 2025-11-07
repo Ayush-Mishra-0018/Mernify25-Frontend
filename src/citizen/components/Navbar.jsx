@@ -17,7 +17,8 @@ import { getUserName, getUserProfilePicture } from '../../utility/jwtDecoder';
 
 const pages = [
   { name: 'Home', path: '/' },
-  { name: 'AI Chat', path: '/eco-bot' }
+  { name: 'AI Chat', path: '/eco-bot' },
+  { name: 'My Initiatives', path: '/my-initiatives' },
 ];
 const settings = ['Logout'];
 

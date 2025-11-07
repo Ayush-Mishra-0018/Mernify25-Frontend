@@ -11,6 +11,8 @@ import CitizenLayout from "./citizen/layouts/CitizenLayout.jsx";
 // Citizen pages
 import HomePage from "./citizen/pages/HomePage.jsx";
 import AIChatPage from "./citizen/pages/AIChatPage.jsx";
+import MyInitiatives from "./citizen/pages/MyInitiatives.jsx";
+import CommunityInitiatives from "./citizen/pages/CommunityInitiatives.jsx";
 
 // for login
 import Login from "./login/Login";
@@ -25,6 +27,8 @@ const App = () => {
           <Route path="/" element={<CitizenLayout />}>
             <Route index element={<HomePage />} />
             <Route path="eco-bot" element={<AIChatPage />} />
+            <Route path="my-initiatives" element={<MyInitiatives />} />
+            <Route path="community-initiatives" element={<CommunityInitiatives />} />
           </Route>
         </Route>
 

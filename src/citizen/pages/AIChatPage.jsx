@@ -229,14 +229,18 @@ const AIChatPage = () => {
             color="primary"
             onClick={handleSend}
             disabled={!input.trim() || loading}
+            size="small"
             sx={{
               bgcolor: '#047857',
               color: 'white',
+              width: '50px',
+              height: '50px',
+              flexShrink: 0,
               '&:hover': { bgcolor: '#059669' },
               '&:disabled': { bgcolor: '#e5e7eb' },
             }}
           >
-            <SendIcon />
+            <SendIcon fontSize="small" />
           </IconButton>
         </Paper>
       </Box>

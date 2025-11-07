@@ -1,7 +1,12 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
+import ExploreIcon from '@mui/icons-material/Explore';
 
 const HeroSection = ({ words, currentWordIndex, isVisible }) => {
+  const navigate = useNavigate();
+  
   return (
     <Box sx={{ flex: 1 }}>
       <Box>
@@ -36,6 +41,62 @@ const HeroSection = ({ words, currentWordIndex, isVisible }) => {
           >
             {words[currentWordIndex]}
           </Typography>
+        </Box>
+        
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<AddIcon />}
+            onClick={() => navigate('/my-initiatives')}
+            sx={{
+              bgcolor: '#047857',
+              color: 'white',
+              px: 4,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 600,
+              borderRadius: 2,
+              textTransform: 'none',
+              boxShadow: '0 4px 6px rgba(4, 120, 87, 0.3)',
+              '&:hover': {
+                bgcolor: '#059669',
+                boxShadow: '0 6px 8px rgba(4, 120, 87, 0.4)',
+                transform: 'translateY(-2px)',
+              },
+              transition: 'all 0.3s ease',
+            }}
+          >
+            Launch New Initiative
+          </Button>
+          
+          <Button
+            variant="outlined"
+            size="large"
+            startIcon={<ExploreIcon />}
+            onClick={() => navigate('/community-initiatives')}
+            sx={{
+              borderColor: '#047857',
+              color: '#047857',
+              px: 4,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 600,
+              borderRadius: 2,
+              borderWidth: 2,
+              textTransform: 'none',
+              '&:hover': {
+                borderColor: '#059669',
+                bgcolor: 'rgba(4, 120, 87, 0.05)',
+                borderWidth: 2,
+                transform: 'translateY(-2px)',
+              },
+              transition: 'all 0.3s ease',
+            }}
+          >
+            Explore Community Initiatives
+          </Button>
         </Box>
       </Box>
     </Box>
