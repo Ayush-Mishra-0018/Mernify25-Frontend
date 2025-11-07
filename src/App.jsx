@@ -5,15 +5,28 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 
-// Context
+// Citizen layout
+import CitizenLayout from "./citizen/layouts/CitizenLayout.jsx";
 
 // Citizen pages
-
+import HomePage from "./citizen/pages/HomePage.jsx";
+import AIChatPage from "./citizen/pages/AIChatPage.jsx";
 
 const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+       <Route path="/" element={<CitizenLayout />}>
+         <Route index element={<HomePage />} />
+         <Route path="eco-bot" element={<AIChatPage />} />
+       </Route>
+    </>
+    )
+  );
 
-export default App
+  return (
+      <RouterProvider router={router} />
+  );
+};
+
+export default App;
