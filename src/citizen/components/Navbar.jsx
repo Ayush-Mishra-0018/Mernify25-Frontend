@@ -1,74 +1,199 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
 
-const Navbar = () => {
+const pages = [
+  { name: 'Home', path: '/' },
+  { name: 'AI Chat', path: '/eco-bot' }
+];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+function Navbar() {
+  const navigate = useNavigate();
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleCloseNavMenu();
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-effect">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo and Brand */}
-          <Link to="/" className="flex items-center space-x-3 group">
+    <AppBar position="static" sx={{ background: 'linear-gradient(90deg, #047857 0%, #0e7490 100%)' }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          {/* Desktop Logo */}
+          <Box 
+            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, cursor: 'pointer' }}
+            onClick={handleLogoClick}
+          >
             <img 
               src="/logo.png" 
               alt="EcoSynergy Logo" 
-              className="h-10 w-10 transition-transform duration-300 group-hover:scale-110"
+              style={{ width: '40px', height: '40px' }}
             />
-            <span className="text-2xl font-bold bg-linear-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              EcoSynergy
-            </span>
-          </Link>
+          </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            onClick={handleLogoClick}
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 700,
+              letterSpacing: '.1rem',
+              color: 'inherit',
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            EcoSynergy
+          </Typography>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/" 
-              className="text-gray-300 hover:text-white transition-colors duration-300 font-medium"
+          {/* Mobile Menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-              Home
-            </Link>
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{ display: { xs: 'block', md: 'none' } }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.name} onClick={() => handleNavigation(page.path)}>
+                  <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
 
-            <Link 
-              to="/eco-bot" 
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-linear-to-r from-green-500 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300"
-            >
-              <svg 
-                className="w-5 h-5" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
+          {/* Mobile Logo */}
+          <Box 
+            sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, cursor: 'pointer' }}
+            onClick={handleLogoClick}
+          >
+            <img 
+              src="/logo.png" 
+              alt="EcoSynergy Logo" 
+              style={{ width: '35px', height: '35px' }}
+            />
+          </Box>
+          <Typography
+            variant="h5"
+            noWrap
+            onClick={handleLogoClick}
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 700,
+              letterSpacing: '.1rem',
+              color: 'inherit',
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            EcoSynergy
+          </Typography>
+
+          {/* Desktop Menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={() => handleNavigation(page.path)}
+                sx={{ my: 2, color: 'white', display: 'block', fontWeight: 500 }}
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
-                />
-              </svg>
-              <span>Recycle</span>
-            </Link>
-            
-          </div>
+                {page.name}
+              </Button>
+            ))}
+          </Box>
 
-          {/* Mobile Menu Button */}
-          <button className="md:hidden text-gray-300 hover:text-white">
-            <svg 
-              className="w-6 h-6" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+          {/* User Menu */}
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 6h16M4 12h16M4 18h16" 
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </nav>
-  )
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
+  );
 }
 
-export default Navbar
+export default Navbar;
