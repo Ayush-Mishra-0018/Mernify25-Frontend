@@ -64,7 +64,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" sx={{ background: 'linear-gradient(90deg, #047857 0%, #0e7490 100%)' }}>
+    <AppBar position="static" sx={{ background: 'linear-gradient(90deg, #064e3b 0%, #0c5a6b 100%)' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ minHeight: { xs: '56px', md: '64px' }, py: 0.5 }}>
           {/* Desktop Logo */}

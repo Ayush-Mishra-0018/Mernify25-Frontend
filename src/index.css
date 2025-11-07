@@ -8,7 +8,14 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #0f0f0f 50%, #1a1a1a 75%, #0a0a0a 100%);
+  background: linear-gradient(135deg, 
+    #081814 0%, 
+    #0a0f0e 20%,
+    #080f14 40%, 
+    #061210 60%,
+    #0d1a16 80%,
+    #081814 100%
+  );
   background-attachment: fixed;
   position: relative;
   overflow-x: hidden;
@@ -21,10 +28,24 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(5, 150, 105, 0.10) 0%, transparent 40%),
+    radial-gradient(circle at 75% 25%, rgba(20, 184, 166, 0.08) 0%, transparent 35%),
+    radial-gradient(circle at 30% 70%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
+  animation: gradientShift 20s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 /* Add noise texture */

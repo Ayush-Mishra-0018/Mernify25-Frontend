@@ -16,6 +16,13 @@ import {
   AvatarGroup,
   Tooltip,
   Button,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PeopleIcon from "@mui/icons-material/People";
@@ -40,6 +47,8 @@ const ImpactBoard = () => {
   const currentUserName = useRef(null);
   const [isFinalized, setIsFinalized] = useState(false);
   const [finishing, setFinishing] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [confirmDialog, setConfirmDialog] = useState(false);
 
   useEffect(() => {
     // Get current user info from token
@@ -196,16 +205,24 @@ const ImpactBoard = () => {
     }
   };
 
-  const handleFinishImpactBoard = async () => {
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  const handleFinishClick = () => {
     if (!impactData.summary.trim()) {
-      alert("Cannot finish an empty impact summary!");
+      showSnackbar("Cannot finish an empty impact summary!", "error");
       return;
     }
+    setConfirmDialog(true);
+  };
 
-    if (!window.confirm("Are you sure you want to finalize the Impact Board? This action cannot be undone and will stop all editing.")) {
-      return;
-    }
-
+  const handleFinishImpactBoard = async () => {
+    setConfirmDialog(false);
     const token = localStorage.getItem("token");
     setFinishing(true);
 
@@ -228,7 +245,7 @@ const ImpactBoard = () => {
 
       const data = await response.json();
       setIsFinalized(true);
-      alert("Impact Board finalized successfully! Summary has been generated.");
+      showSnackbar("Impact Board finalized successfully! Summary has been generated.", "success");
       
       // Redirect to view summary page
       setTimeout(() => {
@@ -236,7 +253,7 @@ const ImpactBoard = () => {
       }, 1500);
     } catch (error) {
       console.error("Error finishing impact board:", error);
-      alert(error.message || "Failed to finalize impact board");
+      showSnackbar(error.message || "Failed to finalize impact board", "error");
     } finally {
       setFinishing(false);
     }
@@ -382,7 +399,7 @@ const ImpactBoard = () => {
             {!isFinalized && driveData.createdBy._id === currentUserId.current && (
               <Button
                 variant="contained"
-                onClick={handleFinishImpactBoard}
+                onClick={handleFinishClick}
                 disabled={finishing}
                 sx={{
                   bgcolor: "#fbbf24",
@@ -550,6 +567,63 @@ const ImpactBoard = () => {
           </Box>
         </Box>
       </Paper>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDialog}
+        onClose={() => setConfirmDialog(false)}
+        PaperProps={{
+          sx: {
+            bgcolor: "#1e293b",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+          }
+        }}
+      >
+        <DialogTitle sx={{ color: "#10b981", fontWeight: 700 }}>
+          Finalize Impact Board
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ color: "#e5e7eb" }}>
+            Are you sure you want to finalize the Impact Board? This action cannot be undone and will stop all editing. The summary will be processed by AI and made available to everyone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setConfirmDialog(false)}
+            sx={{ color: "#9ca3af" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleFinishImpactBoard}
+            variant="contained"
+            sx={{
+              bgcolor: "#10b981",
+              "&:hover": {
+                bgcolor: "#059669",
+              },
+            }}
+          >
+            Finalize
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

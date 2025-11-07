@@ -46,6 +46,7 @@ const NewInitiativeModal = ({ isOpen, onClose, onLaunch }) => {
   return (
     <Dialog
       open={isOpen}
+  
       onClose={onClose}
       maxWidth="sm"
       fullWidth
