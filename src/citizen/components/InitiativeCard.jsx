@@ -51,13 +51,17 @@ const InitiativeCard = ({
   };
 
   const handleImpactBoardClick = () => {
-    // Check if user has joined or is the organizer
-    if (!isJoined && !onCancel) {
-      // If not joined and not the organizer (onCancel means it's the organizer's card)
-      setSnackbarMessage("Impact board is accessible only to participants");
-      setSnackbarOpen(true);
+    // If result exists, anyone can view the summary
+    if (initiative.result) {
+      onImpactBoard && onImpactBoard(initiative._id, true); // Pass true for view summary mode
     } else {
-      onImpactBoard && onImpactBoard(initiative._id);
+      // For active impact board, check if user has joined or is the organizer
+      if (!isJoined && !onCancel) {
+        setSnackbarMessage("Impact board is accessible only to participants");
+        setSnackbarOpen(true);
+      } else {
+        onImpactBoard && onImpactBoard(initiative._id, false); // Pass false for edit mode
+      }
     }
   };
 
@@ -329,7 +333,7 @@ const InitiativeCard = ({
           </Box>
         )}
 
-        {/* Impact Board Button - Only for completed initiatives */}
+        {/* Impact Board / View Summary Button - Only for completed initiatives */}
         {initiative.status === "completed" && (
           <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #334155" }}>
             <Button
@@ -339,15 +343,15 @@ const InitiativeCard = ({
               startIcon={<AssessmentIcon />}
               onClick={handleImpactBoardClick}
               sx={{
-                borderColor: "#8b5cf6",
-                color: "#8b5cf6",
+                borderColor: initiative.result ? "#10b981" : "#8b5cf6",
+                color: initiative.result ? "#10b981" : "#8b5cf6",
                 "&:hover": {
-                  borderColor: "#a78bfa",
-                  bgcolor: "rgba(139, 92, 246, 0.1)",
+                  borderColor: initiative.result ? "#34d399" : "#a78bfa",
+                  bgcolor: initiative.result ? "rgba(16, 185, 129, 0.1)" : "rgba(139, 92, 246, 0.1)",
                 },
               }}
             >
-              Impact Board
+              {initiative.result ? "📊 View Summary" : "✏️ Impact Board"}
             </Button>
           </Box>
         )}

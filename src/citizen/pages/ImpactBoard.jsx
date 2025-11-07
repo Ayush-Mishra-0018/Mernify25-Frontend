@@ -15,6 +15,7 @@ import {
   TextField,
   AvatarGroup,
   Tooltip,
+  Button,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PeopleIcon from "@mui/icons-material/People";
@@ -37,6 +38,8 @@ const ImpactBoard = () => {
   const updateTimeoutRef = useRef({});
   const currentUserId = useRef(null);
   const currentUserName = useRef(null);
+  const [isFinalized, setIsFinalized] = useState(false);
+  const [finishing, setFinishing] = useState(false);
 
   useEffect(() => {
     // Get current user info from token
@@ -135,6 +138,14 @@ const ImpactBoard = () => {
       }
     });
 
+    // Listen for impact board finalized event
+    socket.on("impactBoardFinished", ({ driveId: finishedDriveId }) => {
+      if (finishedDriveId === driveId) {
+        setIsFinalized(true);
+        setFinishing(false);
+      }
+    });
+
     // Cleanup
     return () => {
       socket.emit("leaveImpactBoard", { driveId, userId: currentUserId.current });
@@ -145,6 +156,7 @@ const ImpactBoard = () => {
       socket.off("userFocusedField");
       socket.off("userBlurredField");
       socket.off("remoteCursorUpdate");
+      socket.off("impactBoardFinished");
     };
   }, [socket, driveId]);
 
@@ -175,11 +187,58 @@ const ImpactBoard = () => {
       setImpactData(data.drive.impactData || {
         summary: "",
       });
+      setIsFinalized(data.drive.isFinalized || false);
     } catch (error) {
       console.error("Error fetching drive data:", error);
       navigate("/");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFinishImpactBoard = async () => {
+    if (!impactData.summary.trim()) {
+      alert("Cannot finish an empty impact summary!");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to finalize the Impact Board? This action cannot be undone and will stop all editing.")) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    setFinishing(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/finishImpactBoard/${driveId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to finish impact board");
+      }
+
+      const data = await response.json();
+      setIsFinalized(true);
+      alert("Impact Board finalized successfully! Summary has been generated.");
+      
+      // Redirect to view summary page
+      setTimeout(() => {
+        navigate(`/view-summary/${driveId}`);
+      }, 1500);
+    } catch (error) {
+      console.error("Error finishing impact board:", error);
+      alert(error.message || "Failed to finalize impact board");
+    } finally {
+      setFinishing(false);
     }
   };
 
@@ -318,26 +377,63 @@ const ImpactBoard = () => {
             </Box>
           </Box>
           
-          {/* Active Users */}
-          {activeUsers.length > 0 && (
-            <Tooltip title={`Active users: ${activeUsers.map(u => u.userName).join(", ")}`}>
-              <AvatarGroup max={4} sx={{ cursor: "pointer" }}>
-                {activeUsers.map((user) => (
-                  <Avatar
-                    key={user.userId}
-                    sx={{
-                      bgcolor: "#10b981",
-                      width: 32,
-                      height: 32,
-                      fontSize: "0.875rem",
-                    }}
-                  >
-                    {user.userName?.charAt(0).toUpperCase()}
-                  </Avatar>
-                ))}
-              </AvatarGroup>
-            </Tooltip>
-          )}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {/* Finish Button - Only for creator */}
+            {!isFinalized && driveData.createdBy._id === currentUserId.current && (
+              <Button
+                variant="contained"
+                onClick={handleFinishImpactBoard}
+                disabled={finishing}
+                sx={{
+                  bgcolor: "#fbbf24",
+                  color: "#000",
+                  fontWeight: 700,
+                  "&:hover": {
+                    bgcolor: "#f59e0b",
+                  },
+                  "&:disabled": {
+                    bgcolor: "#9ca3af",
+                    color: "#fff",
+                  },
+                }}
+              >
+                {finishing ? <CircularProgress size={24} sx={{ color: "#fff" }} /> : "🏁 Finish"}
+              </Button>
+            )}
+
+            {/* Finalized Badge */}
+            {isFinalized && (
+              <Chip
+                label="✅ Finalized"
+                sx={{
+                  bgcolor: "#fbbf24",
+                  color: "#000",
+                  fontWeight: 700,
+                }}
+              />
+            )}
+
+            {/* Active Users */}
+            {activeUsers.length > 0 && (
+              <Tooltip title={`Active users: ${activeUsers.map(u => u.userName).join(", ")}`}>
+                <AvatarGroup max={4} sx={{ cursor: "pointer" }}>
+                  {activeUsers.map((user) => (
+                    <Avatar
+                      key={user.userId}
+                      sx={{
+                        bgcolor: "#10b981",
+                        width: 32,
+                        height: 32,
+                        fontSize: "0.875rem",
+                      }}
+                    >
+                      {user.userName?.charAt(0).toUpperCase()}
+                    </Avatar>
+                  ))}
+                </AvatarGroup>
+              </Tooltip>
+            )}
+          </Box>
         </Box>
       </Paper>
 
@@ -387,19 +483,24 @@ const ImpactBoard = () => {
         }}
       >
         <Typography variant="h6" fontWeight={700} sx={{ color: "#10b981", mb: 2 }}>
-          {focusedFields.summary ? `Impact Summary (${focusedFields.summary.userName} is editing...)` : "Impact Summary (Collaborative)"}
+          {isFinalized 
+            ? "Impact Summary (Finalized)" 
+            : focusedFields.summary 
+              ? `Impact Summary (${focusedFields.summary.userName} is editing...)` 
+              : "Impact Summary (Collaborative)"}
         </Typography>
         <TextField
           value={impactData.summary}
-          onChange={(e) => handleFieldChange("summary", e.target.value, e.target.selectionStart)}
-          onFocus={(e) => handleFieldFocus("summary", e.target.selectionStart)}
-          onBlur={() => handleFieldBlur("summary")}
-          onSelect={(e) => handleCursorMove("summary", e.target.selectionStart)}
-          placeholder="Share the complete story of this initiative - what was accomplished, challenges overcome, lessons learned, community impact, and future recommendations..."
+          onChange={(e) => !isFinalized && handleFieldChange("summary", e.target.value, e.target.selectionStart)}
+          onFocus={(e) => !isFinalized && handleFieldFocus("summary", e.target.selectionStart)}
+          onBlur={() => !isFinalized && handleFieldBlur("summary")}
+          onSelect={(e) => !isFinalized && handleCursorMove("summary", e.target.selectionStart)}
+          placeholder={isFinalized ? "This impact board has been finalized." : "Share the complete story of this initiative - what was accomplished, challenges overcome, lessons learned, community impact, and future recommendations..."}
           multiline
           rows={12}
           fullWidth
           variant="outlined"
+          disabled={isFinalized}
           sx={{
             "& .MuiOutlinedInput-root": {
               color: "#e5e7eb",

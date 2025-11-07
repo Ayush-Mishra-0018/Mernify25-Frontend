@@ -15,6 +15,7 @@ import MyInitiatives from "./citizen/pages/MyInitiatives.jsx";
 import CommunityInitiatives from "./citizen/pages/CommunityInitiatives.jsx";
 import DiscussionForum from "./citizen/pages/DiscussionForum.jsx";
 import ImpactBoard from "./citizen/pages/ImpactBoard.jsx";
+import ViewSummary from "./citizen/pages/ViewSummary.jsx";
 
 // for login
 import Login from "./login/Login";
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="community-initiatives" element={<CommunityInitiatives />} />
             <Route path="discussion/:driveId" element={<DiscussionForum />} />
             <Route path="impact-board/:driveId" element={<ImpactBoard />} />
+            <Route path="view-summary/:driveId" element={<ViewSummary />} />
           </Route>
         </Route>
 

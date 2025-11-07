@@ -211,9 +211,13 @@ const CommunityInitiatives = () => {
     navigate(`/discussion/${driveId}`);
   };
 
-  const handleImpactBoard = (driveId) => {
-    // Navigate to impact board page
-    navigate(`/impact-board/${driveId}`);
+  const handleImpactBoard = (driveId, isViewSummary) => {
+    // Navigate to view summary if finalized, otherwise impact board
+    if (isViewSummary) {
+      navigate(`/view-summary/${driveId}`);
+    } else {
+      navigate(`/impact-board/${driveId}`);
+    }
   };
 
   const isJoined = (driveId) => joinedDrives.has(driveId);
