@@ -21,7 +21,7 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-       <Route element={<ProtectedRoute userOnly={true} />}>
+       <Route element={<ProtectedRoute citizenOnly={true} />}>
           <Route path="/" element={<CitizenLayout />}>
             <Route index element={<HomePage />} />
             <Route path="eco-bot" element={<AIChatPage />} />
