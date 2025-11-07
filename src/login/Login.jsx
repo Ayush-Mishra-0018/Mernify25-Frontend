@@ -88,23 +88,23 @@ const Login = () => {
       </div>
 
   {/* Main Content Card */}
-  <div className="relative z-10 max-w-md w-full flex flex-col gap-10 md:gap-12">
+  <div className="relative z-10 max-w-md w-full flex flex-col gap-6">
         <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50">
-          <div className="p-8 md:p-10 lg:p-12 flex flex-col items-center gap-8">
+          <div className="p-6 md:p-8 flex flex-col items-center gap-6">
           
           {/* Logo/Icon Section */}
           <div className="flex justify-center">
             <div className="relative">
-             <img src="/logo.png" alt="EcoSynergy Logo" className="w-16 h-16 md:w-20 md:h-20" />
+             <img src="/logo.png" alt="EcoSynergy Logo" className="w-14 h-14 md:w-16 md:h-16" />
             </div>
           </div>
 
           {/* Title Section */}
-          <div className="text-center flex flex-col gap-2">
-            <h1 className="text-[clamp(1.75rem,8vw,2.5rem)] md:text-[clamp(2rem,5vw,3rem)] font-bold bg-linear-to-r from-green-400 via-emerald-500 to-teal-400 bg-clip-text text-transparent wrap-break-word">
+          <div className="text-center flex flex-col gap-1.5">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-400 via-emerald-500 to-teal-400 bg-clip-text text-transparent">
               EcoSynergy
             </h1>
-            <p className="text-gray-400 text-sm md:text-base">
+            <p className="text-gray-400 text-sm">
               Together for a Sustainable Future
             </p>
           </div>

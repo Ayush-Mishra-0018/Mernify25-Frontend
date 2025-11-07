@@ -159,7 +159,7 @@ const CommunityInitiatives = () => {
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        showSnackbar(`Failed to join drive: ${errorData.message}`, "error");
+        showSnackbar(errorData.error || "Failed to join drive", "error");
       }
     } catch (error) {
       console.error("Error joining drive:", error);
@@ -198,7 +198,7 @@ const CommunityInitiatives = () => {
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        showSnackbar(`Failed to leave drive: ${errorData.message}`, "error");
+        showSnackbar(`Failed to leave drive: ${errorData.error}`, "error");
       }
     } catch (error) {
       console.error("Error leaving drive:", error);
@@ -209,6 +209,11 @@ const CommunityInitiatives = () => {
   const handleDiscussionForum = (driveId) => {
     // Navigate to discussion forum page
     navigate(`/discussion/${driveId}`);
+  };
+
+  const handleImpactBoard = (driveId) => {
+    // Navigate to impact board page
+    navigate(`/impact-board/${driveId}`);
   };
 
   const isJoined = (driveId) => joinedDrives.has(driveId);
@@ -305,6 +310,7 @@ const CommunityInitiatives = () => {
                   onJoin={handleJoinDrive}
                   onLeave={handleLeaveDrive}
                   onDiscussion={handleDiscussionForum}
+                  onImpactBoard={handleImpactBoard}
                 />
               </Grid>
             ))}

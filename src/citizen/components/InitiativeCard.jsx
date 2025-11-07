@@ -17,6 +17,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ForumIcon from "@mui/icons-material/Forum";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 const InitiativeCard = ({
   initiative,
@@ -26,6 +27,7 @@ const InitiativeCard = ({
   onJoin,
   onLeave,
   onDiscussion,
+  onImpactBoard,
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -293,26 +295,51 @@ const InitiativeCard = ({
           </Box>
         )}
 
-        {/* Discussion Forum Button - Always visible */}
-        <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #334155" }}>
-          <Button
-            fullWidth
-            variant="outlined"
-            size="small"
-            startIcon={<ForumIcon />}
-            onClick={handleDiscussionClick}
-            sx={{
-              borderColor: "#06b6d4",
-              color: "#06b6d4",
-              "&:hover": {
-                borderColor: "#22d3ee",
-                bgcolor: "rgba(6, 182, 212, 0.1)",
-              },
-            }}
-          >
-            Discussion Forum
-          </Button>
-        </Box>
+        {/* Discussion Forum Button - Always visible except for completed */}
+        {initiative.status !== "completed" && (
+          <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #334155" }}>
+            <Button
+              fullWidth
+              variant="outlined"
+              size="small"
+              startIcon={<ForumIcon />}
+              onClick={handleDiscussionClick}
+              sx={{
+                borderColor: "#06b6d4",
+                color: "#06b6d4",
+                "&:hover": {
+                  borderColor: "#22d3ee",
+                  bgcolor: "rgba(6, 182, 212, 0.1)",
+                },
+              }}
+            >
+              Discussion Forum
+            </Button>
+          </Box>
+        )}
+
+        {/* Impact Board Button - Only for completed initiatives */}
+        {initiative.status === "completed" && (
+          <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #334155" }}>
+            <Button
+              fullWidth
+              variant="outlined"
+              size="small"
+              startIcon={<AssessmentIcon />}
+              onClick={() => onImpactBoard && onImpactBoard(initiative._id)}
+              sx={{
+                borderColor: "#8b5cf6",
+                color: "#8b5cf6",
+                "&:hover": {
+                  borderColor: "#a78bfa",
+                  bgcolor: "rgba(139, 92, 246, 0.1)",
+                },
+              }}
+            >
+              Impact Board
+            </Button>
+          </Box>
+        )}
       </CardContent>
 
       <Snackbar

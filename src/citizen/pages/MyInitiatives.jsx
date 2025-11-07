@@ -143,7 +143,7 @@ const MyInitiatives = () => {
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        showSnackbar(`Failed to create initiative: ${errorData.message}`, "error");
+        showSnackbar(`Failed to create initiative: ${errorData.error}`, "error");
       }
     } catch (error) {
       console.error("Error launching initiative:", error);
@@ -185,7 +185,7 @@ const MyInitiatives = () => {
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        showSnackbar(`Failed to cancel drive: ${errorData.message}`, "error");
+        showSnackbar(`Failed to cancel drive: ${errorData.error}`, "error");
       }
     } catch (error) {
       console.error("Error cancelling drive:", error);
@@ -196,6 +196,11 @@ const MyInitiatives = () => {
   const handleDiscussionForum = (driveId) => {
     // Navigate to discussion forum page
     navigate(`/discussion/${driveId}`);
+  };
+
+  const handleImpactBoard = (driveId) => {
+    // Navigate to impact board page
+    navigate(`/impact-board/${driveId}`);
   };
 
   return (
@@ -307,6 +312,7 @@ const MyInitiatives = () => {
                   initiative={initiative}
                   onCancel={handleCancelDrive}
                   onDiscussion={handleDiscussionForum}
+                  onImpactBoard={handleImpactBoard}
                 />
               </Grid>
             ))}

@@ -14,6 +14,7 @@ import AIChatPage from "./citizen/pages/AIChatPage.jsx";
 import MyInitiatives from "./citizen/pages/MyInitiatives.jsx";
 import CommunityInitiatives from "./citizen/pages/CommunityInitiatives.jsx";
 import DiscussionForum from "./citizen/pages/DiscussionForum.jsx";
+import ImpactBoard from "./citizen/pages/ImpactBoard.jsx";
 
 // for login
 import Login from "./login/Login";
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="my-initiatives" element={<MyInitiatives />} />
             <Route path="community-initiatives" element={<CommunityInitiatives />} />
             <Route path="discussion/:driveId" element={<DiscussionForum />} />
+            <Route path="impact-board/:driveId" element={<ImpactBoard />} />
           </Route>
         </Route>
 
