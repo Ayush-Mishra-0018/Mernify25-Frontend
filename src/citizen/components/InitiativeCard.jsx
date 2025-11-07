@@ -50,6 +50,17 @@ const InitiativeCard = ({
     }
   };
 
+  const handleImpactBoardClick = () => {
+    // Check if user has joined or is the organizer
+    if (!isJoined && !onCancel) {
+      // If not joined and not the organizer (onCancel means it's the organizer's card)
+      setSnackbarMessage("Impact board is accessible only to participants");
+      setSnackbarOpen(true);
+    } else {
+      onImpactBoard && onImpactBoard(initiative._id);
+    }
+  };
+
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
@@ -326,7 +337,7 @@ const InitiativeCard = ({
               variant="outlined"
               size="small"
               startIcon={<AssessmentIcon />}
-              onClick={() => onImpactBoard && onImpactBoard(initiative._id)}
+              onClick={handleImpactBoardClick}
               sx={{
                 borderColor: "#8b5cf6",
                 color: "#8b5cf6",
