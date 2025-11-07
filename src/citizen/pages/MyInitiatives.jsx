@@ -24,8 +24,10 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import PeopleIcon from "@mui/icons-material/People";
 import CancelIcon from "@mui/icons-material/Cancel";
 import NewInitiativeModal from "../components/NewInitiativeModal";
+import { useSocket } from "../../context/SocketContext";
 
 const MyInitiatives = () => {
+  const socket = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -68,6 +70,51 @@ const MyInitiatives = () => {
   useEffect(() => {
     fetchInitiatives();
   }, [filter]);
+
+  // Socket event listeners for real-time updates
+  useEffect(() => {
+    if (!socket) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const userId = JSON.parse(atob(token.split('.')[1])).id;
+
+    // Listen for drive updates (join/leave)
+    socket.on("driveUpdated", ({ driveId, participantsCount, action }) => {
+      console.log(`📢 Drive ${action}:`, driveId, participantsCount);
+      setInitiatives((prevInitiatives) =>
+        prevInitiatives.map((drive) =>
+          drive._id === driveId
+            ? { ...drive, participants: Array(participantsCount).fill(null) }
+            : drive
+        )
+      );
+    });
+
+    // Listen for drive cancellation (if someone else cancels a drive you created)
+    socket.on("driveCancelled", (cancelledDrive) => {
+      console.log("📢 Drive cancelled:", cancelledDrive);
+      
+      // Update the drive if it's one of the user's drives
+      if (cancelledDrive.createdBy === userId || cancelledDrive.createdBy._id === userId) {
+        setInitiatives((prevInitiatives) =>
+          prevInitiatives.map((drive) =>
+            drive._id === cancelledDrive._id
+              ? { ...drive, status: "cancelled", cancellationReason: cancelledDrive.cancellationReason }
+              : drive
+          )
+        );
+      }
+    });
+
+    // Cleanup listeners on unmount
+    return () => {
+      socket.off("driveUpdated");
+      socket.off("driveCancelled");
+    };
+  }, [socket, filter]);
+
 
   const handleLaunchInitiative = async (formData) => {
     const token = localStorage.getItem("token");

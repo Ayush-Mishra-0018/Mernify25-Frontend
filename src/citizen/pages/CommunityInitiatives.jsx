@@ -25,8 +25,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useSocket } from "../../context/SocketContext";
 
 const CommunityInitiatives = () => {
+  const socket = useSocket();
   const [initiatives, setInitiatives] = useState([]);
   const [filter, setFilter] = useState("active");
   const [joinedDrives, setJoinedDrives] = useState(new Set());
@@ -78,6 +80,65 @@ const CommunityInitiatives = () => {
   useEffect(() => {
     fetchInitiatives();
   }, [filter]);
+
+  // Socket event listeners for real-time updates
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for new drive created
+    socket.on("driveCreated", (newDrive) => {
+      console.log("📢 New drive created:", newDrive);
+      setInitiatives((prevInitiatives) => {
+        // Add to list if it matches current filter
+        if (newDrive.status === filter || filter === "all") {
+          return [newDrive, ...prevInitiatives];
+        }
+        return prevInitiatives;
+      });
+      showSnackbar("New community drive created!", "info");
+    });
+
+    // Listen for drive updates (join/leave)
+    socket.on("driveUpdated", ({ driveId, participantsCount, action }) => {
+      console.log(`📢 Drive ${action}:`, driveId, participantsCount);
+      setInitiatives((prevInitiatives) =>
+        prevInitiatives.map((drive) =>
+          drive._id === driveId
+            ? { ...drive, participants: Array(participantsCount).fill(null) }
+            : drive
+        )
+      );
+    });
+
+    // Listen for drive cancellation
+    socket.on("driveCancelled", (cancelledDrive) => {
+      console.log("📢 Drive cancelled:", cancelledDrive);
+      setInitiatives((prevInitiatives) =>
+        prevInitiatives.map((drive) =>
+          drive._id === cancelledDrive._id
+            ? { ...drive, status: "cancelled", cancellationReason: cancelledDrive.cancellationReason }
+            : drive
+        )
+      );
+      
+      // Remove from active filter view if currently on active
+      if (filter === "active") {
+        setInitiatives((prevInitiatives) =>
+          prevInitiatives.filter((drive) => drive._id !== cancelledDrive._id)
+        );
+      }
+      
+      showSnackbar("A drive has been cancelled", "warning");
+    });
+
+    // Cleanup listeners on unmount
+    return () => {
+      socket.off("driveCreated");
+      socket.off("driveUpdated");
+      socket.off("driveCancelled");
+    };
+  }, [socket, filter]);
+
 
   const handleJoinDrive = async (driveId) => {
     const token = localStorage.getItem("token");
