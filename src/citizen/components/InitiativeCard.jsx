@@ -93,7 +93,7 @@ const InitiativeCard = ({
         },
       }}
     >
-      <CardContent sx={{ flexGrow: 1, p: 3 }}>
+      <CardContent sx={{ flexGrow: 1, p: 3, display: "flex", flexDirection: "column" }}>
         {/* Header with Title and Status */}
         <Box
           sx={{
@@ -225,6 +225,9 @@ const InitiativeCard = ({
             </Typography>
           </Box>
         )}
+
+        {/* Spacer to push buttons to bottom */}
+        <Box sx={{ flexGrow: 1 }} />
 
         {/* Action Buttons */}
         {initiative.status === "active" && (
