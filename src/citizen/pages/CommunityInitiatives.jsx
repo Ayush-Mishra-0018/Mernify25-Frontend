@@ -204,6 +204,11 @@ const CommunityInitiatives = () => {
     }
   };
 
+  const handleDiscussionForum = (driveId) => {
+    // Navigate to discussion forum page
+    window.location.href = `/citizen/discussion/${driveId}`;
+  };
+
   const isJoined = (driveId) => joinedDrives.has(driveId);
 
   return (
@@ -297,6 +302,7 @@ const CommunityInitiatives = () => {
                   isJoined={isJoined(initiative._id)}
                   onJoin={handleJoinDrive}
                   onLeave={handleLeaveDrive}
+                  onDiscussion={handleDiscussionForum}
                 />
               </Grid>
             ))}

@@ -14,6 +14,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ForumIcon from "@mui/icons-material/Forum";
 
 const InitiativeCard = ({
   initiative,
@@ -22,6 +23,7 @@ const InitiativeCard = ({
   onCancel,
   onJoin,
   onLeave,
+  onDiscussion,
 }) => {
   const getStatusColor = (status) => {
     switch (status) {
@@ -200,7 +202,7 @@ const InitiativeCard = ({
 
         {/* Action Buttons */}
         {initiative.status === "active" && (
-          <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb" }}>
+          <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 1.5 }}>
             {onCancel && (
               <Button
                 fullWidth
@@ -261,6 +263,27 @@ const InitiativeCard = ({
             )}
           </Box>
         )}
+
+        {/* Discussion Forum Button - Always visible */}
+        <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb" }}>
+          <Button
+            fullWidth
+            variant="outlined"
+            size="small"
+            startIcon={<ForumIcon />}
+            onClick={() => onDiscussion && onDiscussion(initiative._id)}
+            sx={{
+              borderColor: "#0e7490",
+              color: "#0e7490",
+              "&:hover": {
+                borderColor: "#0891b2",
+                bgcolor: "rgba(14, 116, 144, 0.04)",
+              },
+            }}
+          >
+            Discussion Forum
+          </Button>
+        </Box>
       </CardContent>
     </Card>
   );

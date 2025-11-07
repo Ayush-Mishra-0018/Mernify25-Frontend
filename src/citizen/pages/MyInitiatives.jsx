@@ -191,6 +191,11 @@ const MyInitiatives = () => {
     }
   };
 
+  const handleDiscussionForum = (driveId) => {
+    // Navigate to discussion forum page
+    window.location.href = `/citizen/discussion/${driveId}`;
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
@@ -299,6 +304,7 @@ const MyInitiatives = () => {
                 <InitiativeCard
                   initiative={initiative}
                   onCancel={handleCancelDrive}
+                  onDiscussion={handleDiscussionForum}
                 />
               </Grid>
             ))}
