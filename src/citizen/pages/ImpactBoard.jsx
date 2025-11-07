@@ -17,10 +17,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import RecyclingIcon from "@mui/icons-material/Recycling";
 import PeopleIcon from "@mui/icons-material/People";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import Co2Icon from "@mui/icons-material/Co2";
 import { useSocket } from "../../context/SocketContext";
 import { jwtDecode } from "jwt-decode";
 
@@ -31,10 +29,6 @@ const ImpactBoard = () => {
   const [loading, setLoading] = useState(true);
   const [driveData, setDriveData] = useState(null);
   const [impactData, setImpactData] = useState({
-    wasteCollected: "",
-    carbonOffset: "",
-    impactScore: "",
-    achievements: "",
     summary: "",
   });
   const [activeUsers, setActiveUsers] = useState([]);
@@ -179,10 +173,6 @@ const ImpactBoard = () => {
       const data = await response.json();
       setDriveData(data.drive);
       setImpactData(data.drive.impactData || {
-        wasteCollected: "",
-        carbonOffset: "",
-        impactScore: "",
-        achievements: "",
         summary: "",
       });
     } catch (error) {
@@ -351,9 +341,9 @@ const ImpactBoard = () => {
         </Box>
       </Paper>
 
-      {/* Impact Metrics - Editable */}
+      {/* Participants Card */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12}>
           <Card
             sx={{
               bgcolor: "rgba(255, 255, 255, 0.05)",
@@ -378,164 +368,14 @@ const ImpactBoard = () => {
                 {driveData.participants?.length || 0}
               </Typography>
               <Typography variant="body2" sx={{ color: "#9ca3af" }}>
-                Participants
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            sx={{
-              bgcolor: "rgba(255, 255, 255, 0.05)",
-              border: focusedFields.wasteCollected ? "2px solid #8b5cf6" : "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
-            }}
-          >
-            <CardContent sx={{ textAlign: "center" }}>
-              <Avatar
-                sx={{
-                  bgcolor: "rgba(139, 92, 246, 0.2)",
-                  color: "#8b5cf6",
-                  width: 56,
-                  height: 56,
-                  mx: "auto",
-                  mb: 2,
-                }}
-              >
-                <RecyclingIcon fontSize="large" />
-              </Avatar>
-              <TextField
-                value={impactData.wasteCollected}
-                onChange={(e) => handleFieldChange("wasteCollected", e.target.value, e.target.selectionStart)}
-                onFocus={(e) => handleFieldFocus("wasteCollected", e.target.selectionStart)}
-                onBlur={() => handleFieldBlur("wasteCollected")}
-                onSelect={(e) => handleCursorMove("wasteCollected", e.target.selectionStart)}
-                placeholder="Enter kg"
-                variant="standard"
-                sx={{
-                  "& .MuiInput-input": {
-                    textAlign: "center",
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    color: "#8b5cf6",
-                  },
-                  "& .MuiInput-input::placeholder": {
-                    color: "#6b7280",
-                    opacity: 0.7,
-                  },
-                  mb: 1,
-                }}
-              />
-              <Typography variant="body2" sx={{ color: "#9ca3af" }}>
-                {focusedFields.wasteCollected ? `Waste Collected (${focusedFields.wasteCollected.userName} editing)` : "Waste Collected (kg)"}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            sx={{
-              bgcolor: "rgba(255, 255, 255, 0.05)",
-              border: focusedFields.carbonOffset ? "2px solid #06b6d4" : "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
-            }}
-          >
-            <CardContent sx={{ textAlign: "center" }}>
-              <Avatar
-                sx={{
-                  bgcolor: "rgba(6, 182, 212, 0.2)",
-                  color: "#06b6d4",
-                  width: 56,
-                  height: 56,
-                  mx: "auto",
-                  mb: 2,
-                }}
-              >
-                <Co2Icon fontSize="large" />
-              </Avatar>
-              <TextField
-                value={impactData.carbonOffset}
-                onChange={(e) => handleFieldChange("carbonOffset", e.target.value, e.target.selectionStart)}
-                onFocus={(e) => handleFieldFocus("carbonOffset", e.target.selectionStart)}
-                onBlur={() => handleFieldBlur("carbonOffset")}
-                onSelect={(e) => handleCursorMove("carbonOffset", e.target.selectionStart)}
-                placeholder="Enter kg"
-                variant="standard"
-                sx={{
-                  "& .MuiInput-input": {
-                    textAlign: "center",
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    color: "#06b6d4",
-                  },
-                  "& .MuiInput-input::placeholder": {
-                    color: "#6b7280",
-                    opacity: 0.7,
-                  },
-                  mb: 1,
-                }}
-              />
-              <Typography variant="body2" sx={{ color: "#9ca3af" }}>
-                {focusedFields.carbonOffset ? `Carbon Offset (${focusedFields.carbonOffset.userName} editing)` : "Carbon Offset (kg CO₂)"}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            sx={{
-              bgcolor: "rgba(255, 255, 255, 0.05)",
-              border: focusedFields.impactScore ? "2px solid #fbbf24" : "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
-            }}
-          >
-            <CardContent sx={{ textAlign: "center" }}>
-              <Avatar
-                sx={{
-                  bgcolor: "rgba(251, 191, 36, 0.2)",
-                  color: "#fbbf24",
-                  width: 56,
-                  height: 56,
-                  mx: "auto",
-                  mb: 2,
-                }}
-              >
-                <EmojiEventsIcon fontSize="large" />
-              </Avatar>
-              <TextField
-                value={impactData.impactScore}
-                onChange={(e) => handleFieldChange("impactScore", e.target.value, e.target.selectionStart)}
-                onFocus={(e) => handleFieldFocus("impactScore", e.target.selectionStart)}
-                onBlur={() => handleFieldBlur("impactScore")}
-                onSelect={(e) => handleCursorMove("impactScore", e.target.selectionStart)}
-                placeholder="Enter score"
-                variant="standard"
-                sx={{
-                  "& .MuiInput-input": {
-                    textAlign: "center",
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    color: "#fbbf24",
-                  },
-                  "& .MuiInput-input::placeholder": {
-                    color: "#6b7280",
-                    opacity: 0.7,
-                  },
-                  mb: 1,
-                }}
-              />
-              <Typography variant="body2" sx={{ color: "#9ca3af" }}>
-                {focusedFields.impactScore ? `Impact Score (${focusedFields.impactScore.userName} editing)` : "Impact Score"}
+                Total Participants
               </Typography>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      {/* Collaborative Summary Section */}
+      {/* Collaborative Impact Summary */}
       <Paper
         elevation={2}
         sx={{
@@ -544,7 +384,6 @@ const ImpactBoard = () => {
           border: focusedFields.summary ? "2px solid #8b5cf6" : "1px solid rgba(255, 255, 255, 0.1)",
           backdropFilter: "blur(10px)",
           borderRadius: 2,
-          mb: 3,
         }}
       >
         <Typography variant="h6" fontWeight={700} sx={{ color: "#8b5cf6", mb: 2 }}>
@@ -556,9 +395,9 @@ const ImpactBoard = () => {
           onFocus={(e) => handleFieldFocus("summary", e.target.selectionStart)}
           onBlur={() => handleFieldBlur("summary")}
           onSelect={(e) => handleCursorMove("summary", e.target.selectionStart)}
-          placeholder="Share the story of this initiative - what was accomplished, challenges overcome, and lessons learned..."
+          placeholder="Share the complete story of this initiative - what was accomplished, challenges overcome, lessons learned, community impact, and future recommendations..."
           multiline
-          rows={6}
+          rows={12}
           fullWidth
           variant="outlined"
           sx={{
@@ -609,52 +448,6 @@ const ImpactBoard = () => {
             />
           </Box>
         </Box>
-      </Paper>
-
-      {/* Collaborative Achievements Section */}
-      <Paper
-        elevation={2}
-        sx={{
-          p: 3,
-          bgcolor: "rgba(255, 255, 255, 0.05)",
-          border: focusedFields.achievements ? "2px solid #10b981" : "1px solid rgba(255, 255, 255, 0.1)",
-          backdropFilter: "blur(10px)",
-          borderRadius: 2,
-        }}
-      >
-        <Typography variant="h6" fontWeight={700} sx={{ color: "#10b981", mb: 2 }}>
-          {focusedFields.achievements ? `Key Achievements (${focusedFields.achievements.userName} is editing...)` : "Key Achievements (Collaborative)"}
-        </Typography>
-        <TextField
-          value={impactData.achievements}
-          onChange={(e) => handleFieldChange("achievements", e.target.value, e.target.selectionStart)}
-          onFocus={(e) => handleFieldFocus("achievements", e.target.selectionStart)}
-          onBlur={() => handleFieldBlur("achievements")}
-          onSelect={(e) => handleCursorMove("achievements", e.target.selectionStart)}
-          placeholder="List the key achievements and milestones reached during this initiative..."
-          multiline
-          rows={4}
-          fullWidth
-          variant="outlined"
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              color: "#e5e7eb",
-              "& fieldset": {
-                borderColor: "rgba(255, 255, 255, 0.2)",
-              },
-              "&:hover fieldset": {
-                borderColor: "rgba(255, 255, 255, 0.3)",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#10b981",
-              },
-            },
-            "& .MuiInputBase-input::placeholder": {
-              color: "#9ca3af",
-              opacity: 0.7,
-            },
-          }}
-        />
       </Paper>
     </Container>
   );
