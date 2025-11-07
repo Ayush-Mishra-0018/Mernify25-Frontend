@@ -1,9 +1,394 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Button,
+  Chip,
+  Grid,
+  Card,
+  CardContent,
+  Avatar,
+} from "@mui/material";
+import EventIcon from "@mui/icons-material/Event";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import PeopleIcon from "@mui/icons-material/People";
+import PersonIcon from "@mui/icons-material/Person";
+import GroupsIcon from "@mui/icons-material/Groups";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const CommunityInitiatives = () => {
-  return (
-    <div>CommunityInitiatives</div>
-  )
-}
+  const [initiatives, setInitiatives] = useState([]);
+  const [filter, setFilter] = useState("active");
+  const [joinedDrives, setJoinedDrives] = useState(new Set());
 
-export default CommunityInitiatives
+  const fetchInitiatives = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    let url = `${import.meta.env.VITE_API_URL}/user/allDrives`;
+    if (filter !== "all") {
+      url += `?status=${filter}`;
+    }
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setInitiatives(data.drives);
+        
+        // Track which drives the current user has joined
+        const userId = JSON.parse(atob(token.split('.')[1])).id;
+        const joined = new Set();
+        data.drives.forEach(drive => {
+          if (drive.participants.includes(userId)) {
+            joined.add(drive._id);
+          }
+        });
+        setJoinedDrives(joined);
+      }
+    } catch (error) {
+      console.error("Error fetching initiatives:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInitiatives();
+  }, [filter]);
+
+  const handleJoinDrive = async (driveId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to join a drive.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/joinDrive/${driveId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        alert("Successfully joined the drive!");
+        fetchInitiatives();
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to join drive: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error joining drive:", error);
+      alert("An error occurred while joining the drive.");
+    }
+  };
+
+  const handleLeaveDrive = async (driveId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in.");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to leave this drive?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/leaveDrive/${driveId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        alert("Successfully left the drive.");
+        fetchInitiatives();
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to leave drive: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error leaving drive:", error);
+      alert("An error occurred while leaving the drive.");
+    }
+  };
+
+  const isJoined = (driveId) => joinedDrives.has(driveId);
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box sx={{ mb: 4 }}>
+        {/* Header */}
+        <Paper
+          elevation={2}
+          sx={{
+            p: 3,
+            mb: 3,
+            background: "linear-gradient(90deg, #047857 0%, #0e7490 100%)",
+            color: "white",
+            borderRadius: 2,
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Avatar sx={{ bgcolor: "#10b981", width: 56, height: 56 }}>
+              <GroupsIcon sx={{ fontSize: 32 }} />
+            </Avatar>
+            <Box>
+              <Typography variant="h4" fontWeight={700}>
+                Community Initiatives 🌍
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Join community drives and make a difference together
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+
+        {/* Filter Chips */}
+        <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
+          <Chip
+            label="All"
+            onClick={() => setFilter("all")}
+            sx={{
+              bgcolor: filter === "all" ? "rgba(16, 185, 129, 0.2)" : "rgba(0, 0, 0, 0.05)",
+              color: filter === "all" ? "#10b981" : "#6b7280",
+              border: filter === "all" ? "1px solid rgba(16, 185, 129, 0.5)" : "none",
+              fontWeight: 600,
+              "&:hover": {
+                bgcolor: filter === "all" ? "rgba(16, 185, 129, 0.3)" : "rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          />
+          <Chip
+            label="Active"
+            onClick={() => setFilter("active")}
+            sx={{
+              bgcolor: filter === "active" ? "rgba(16, 185, 129, 0.2)" : "rgba(0, 0, 0, 0.05)",
+              color: filter === "active" ? "#10b981" : "#6b7280",
+              border: filter === "active" ? "1px solid rgba(16, 185, 129, 0.5)" : "none",
+              fontWeight: 600,
+              "&:hover": {
+                bgcolor: filter === "active" ? "rgba(16, 185, 129, 0.3)" : "rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          />
+          <Chip
+            label="Completed"
+            onClick={() => setFilter("completed")}
+            sx={{
+              bgcolor: filter === "completed" ? "rgba(16, 185, 129, 0.2)" : "rgba(0, 0, 0, 0.05)",
+              color: filter === "completed" ? "#10b981" : "#6b7280",
+              border: filter === "completed" ? "1px solid rgba(16, 185, 129, 0.5)" : "none",
+              fontWeight: 600,
+              "&:hover": {
+                bgcolor: filter === "completed" ? "rgba(16, 185, 129, 0.3)" : "rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          />
+        </Box>
+
+        {/* Initiatives Grid */}
+        {initiatives.length > 0 ? (
+          <Grid container spacing={3}>
+            {initiatives.map((initiative) => (
+              <Grid item xs={12} sm={6} md={4} key={initiative._id}>
+                <Card
+                  elevation={2}
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: 2,
+                    transition: "all 0.3s",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: 6,
+                    },
+                  }}
+                >
+                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "start",
+                        mb: 2,
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        sx={{ color: "#047857", flexGrow: 1 }}
+                      >
+                        {initiative.heading}
+                      </Typography>
+                      <Chip
+                        label={initiative.status}
+                        size="large"
+                        sx={{
+                          bgcolor:
+                            initiative.status === "active"
+                              ? "rgba(16, 185, 129, 0.1)"
+                              : initiative.status === "completed"
+                              ? "rgba(59, 130, 246, 0.1)"
+                              : "rgba(107, 114, 128, 0.1)",
+                          color:
+                            initiative.status === "active"
+                              ? "#10b981"
+                              : initiative.status === "completed"
+                              ? "#3b82f6"
+                              : "#6b7280",
+                          fontWeight: 600,
+                          textTransform: "capitalize",
+                          marginLeft: 2,
+                        }}
+                      />
+                    </Box>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2, lineHeight: 1.6 }}
+                    >
+                      {initiative.description}
+                    </Typography>
+
+                    {/* Organizer Info */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                      <PersonIcon sx={{ fontSize: 16, color: "#6b7280" }} />
+                      <Typography variant="caption" color="text.secondary">
+                        Organized by {initiative.createdBy?.name || "Unknown"}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <EventIcon sx={{ fontSize: 18, color: "#047857" }} />
+                        <Typography variant="body2" color="text.secondary">
+                          {new Date(initiative.eventDate).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <AccessTimeIcon sx={{ fontSize: 18, color: "#0e7490" }} />
+                        <Typography variant="body2" color="text.secondary">
+                          {new Date(initiative.timeFrom).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          -{" "}
+                          {new Date(initiative.timeTo).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <PeopleIcon sx={{ fontSize: 18, color: "#10b981" }} />
+                        <Typography variant="body2" color="text.secondary">
+                          {initiative.participants.length} / {initiative.upperLimit}{" "}
+                          participants
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Action Buttons */}
+                    {initiative.status === "active" && (
+                      <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb" }}>
+                        {isJoined(initiative._id) ? (
+                          <Button
+                            fullWidth
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            startIcon={<ExitToAppIcon />}
+                            onClick={() => handleLeaveDrive(initiative._id)}
+                            sx={{
+                              borderColor: "#ef4444",
+                              color: "#ef4444",
+                              "&:hover": {
+                                borderColor: "#dc2626",
+                                bgcolor: "rgba(239, 68, 68, 0.04)",
+                              },
+                            }}
+                          >
+                            Leave Drive
+                          </Button>
+                        ) : (
+                          <Button
+                            fullWidth
+                            variant="contained"
+                            size="small"
+                            startIcon={<CheckCircleIcon />}
+                            onClick={() => handleJoinDrive(initiative._id)}
+                            sx={{
+                              bgcolor: "#047857",
+                              "&:hover": { bgcolor: "#059669" },
+                              fontWeight: 600,
+                            }}
+                          >
+                            Join Drive
+                          </Button>
+                        )}
+                      </Box>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 8,
+              textAlign: "center",
+              bgcolor: "rgba(0, 0, 0, 0.02)",
+              borderRadius: 2,
+            }}
+          >
+            <GroupsIcon sx={{ fontSize: 64, color: "#ffffff", mb: 2 }} />
+            <Typography variant="h6" color="#ffffff" gutterBottom>
+              No initiatives found
+            </Typography>
+            <Typography variant="body2" color="#ffffff">
+              Check back later for new community initiatives!
+            </Typography>
+          </Paper>
+        )}
+      </Box>
+    </Container>
+  );
+};
+
+export default CommunityInitiatives;

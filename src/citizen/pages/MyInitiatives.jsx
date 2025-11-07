@@ -263,7 +263,7 @@ const MyInitiatives = () => {
                       </Typography>
                       <Chip
                         label={initiative.status}
-                        size="small"
+                        size="large"
                         sx={{
                           bgcolor:
                             initiative.status === "active"
@@ -273,6 +273,7 @@ const MyInitiatives = () => {
                             initiative.status === "active" ? "#10b981" : "#6b7280",
                           fontWeight: 600,
                           textTransform: "capitalize",
+                          marginLeft: 2,
                         }}
                       />
                     </Box>
