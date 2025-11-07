@@ -7,8 +7,6 @@ import {
   Button,
   Chip,
   Grid,
-  Card,
-  CardContent,
   Avatar,
   Snackbar,
   Alert,
@@ -20,10 +18,8 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EventIcon from "@mui/icons-material/Event";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import PeopleIcon from "@mui/icons-material/People";
-import CancelIcon from "@mui/icons-material/Cancel";
 import NewInitiativeModal from "../components/NewInitiativeModal";
+import InitiativeCard from "../components/InitiativeCard";
 import { useSocket } from "../../context/SocketContext";
 
 const MyInitiatives = () => {
@@ -300,165 +296,10 @@ const MyInitiatives = () => {
           <Grid container spacing={3}>
             {initiatives.map((initiative) => (
               <Grid item xs={12} sm={6} md={4} key={initiative._id}>
-                <Card
-                  elevation={2}
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    borderRadius: 2,
-                    transition: "all 0.3s",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: 6,
-                    },
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "start",
-                        mb: 2,
-                      }}
-                    >
-                      <Typography
-                        variant="h6"
-                        fontWeight={700}
-                        sx={{ color: "#047857", flexGrow: 1 }}
-                      >
-                        {initiative.heading}
-                      </Typography>
-                      <Chip
-                        label={initiative.status}
-                        size="large"
-                        sx={{
-                          bgcolor:
-                            initiative.status === "active"
-                              ? "rgba(16, 185, 129, 0.1)"
-                              : "rgba(107, 114, 128, 0.1)",
-                          color:
-                            initiative.status === "active" ? "#10b981" : "#6b7280",
-                          fontWeight: 600,
-                          textTransform: "capitalize",
-                          marginLeft: 2,
-                        }}
-                      />
-                    </Box>
-
-                    <Box
-                      sx={{
-                        mb: 3,
-                        maxHeight: "80px",
-                        overflowY: "auto",
-                        "&::-webkit-scrollbar": {
-                          width: "6px",
-                        },
-                        "&::-webkit-scrollbar-track": {
-                          backgroundColor: "rgba(0, 0, 0, 0.05)",
-                          borderRadius: "3px",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "#10b981",
-                          borderRadius: "3px",
-                          "&:hover": {
-                            backgroundColor: "#059669",
-                          },
-                        },
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ lineHeight: 1.6 }}
-                      >
-                        {initiative.description}
-                      </Typography>
-                    </Box>
-
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <EventIcon sx={{ fontSize: 18, color: "#047857" }} />
-                        <Typography variant="body2" color="text.secondary">
-                          {new Date(initiative.eventDate).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </Typography>
-                      </Box>
-
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <AccessTimeIcon sx={{ fontSize: 18, color: "#0e7490" }} />
-                        <Typography variant="body2" color="text.secondary">
-                          {new Date(initiative.timeFrom).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}{" "}
-                          -{" "}
-                          {new Date(initiative.timeTo).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </Typography>
-                      </Box>
-
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <PeopleIcon sx={{ fontSize: 18, color: "#10b981" }} />
-                        <Typography variant="body2" color="text.secondary">
-                          {initiative.participants.length} / {initiative.upperLimit}{" "}
-                          participants
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    {/* Cancellation Reason */}
-                    {initiative.status === "cancelled" && initiative.cancellationReason && (
-                      <Box 
-                        sx={{ 
-                          mt: 2, 
-                          p: 2, 
-                          bgcolor: "rgba(239, 68, 68, 0.05)", 
-                          borderRadius: 1,
-                          borderLeft: "3px solid #ef4444"
-                        }}
-                      >
-                        <Typography variant="caption" color="#ef4444" fontWeight={600} display="block" sx={{ mb: 0.5 }}>
-                          Cancellation Reason:
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {initiative.cancellationReason}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {/* Cancel Button */}
-                    {initiative.status === "active" && (
-                      <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb" }}>
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          color="error"
-                          size="small"
-                          startIcon={<CancelIcon />}
-                          onClick={() => handleCancelDrive(initiative._id)}
-                          sx={{
-                            borderColor: "#ef4444",
-                            color: "#ef4444",
-                            "&:hover": {
-                              borderColor: "#dc2626",
-                              bgcolor: "rgba(239, 68, 68, 0.04)",
-                            },
-                          }}
-                        >
-                          Cancel Drive
-                        </Button>
-                      </Box>
-                    )}
-                  </CardContent>
-                </Card>
+                <InitiativeCard
+                  initiative={initiative}
+                  onCancel={handleCancelDrive}
+                />
               </Grid>
             ))}
           </Grid>
