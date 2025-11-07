@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { handleLogout } from '../../login/logout';
+import { getUserName, getUserProfilePicture } from '../../utility/jwtDecoder';
 
 const pages = [
   { name: 'Home', path: '/' },
@@ -24,6 +25,10 @@ function Navbar() {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  
+  // Get user info from JWT
+  const userName = getUserName();
+  const profilePicture = getUserProfilePicture();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -171,10 +176,25 @@ function Navbar() {
           </Box>
 
           {/* User Menu */}
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {/* User Name - Desktop only */}
+            <Typography
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                color: 'white',
+                fontWeight: 500,
+                fontSize: '0.95rem',
+              }}
+            >
+              {userName || 'User'}
+            </Typography>
+            
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+                <Avatar 
+                  alt={userName || 'User'} 
+                  src={profilePicture || '/static/images/avatar/2.jpg'} 
+                />
               </IconButton>
             </Tooltip>
             <Menu
