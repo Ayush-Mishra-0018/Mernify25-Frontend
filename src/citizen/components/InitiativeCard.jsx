@@ -85,10 +85,11 @@ const InitiativeCard = ({
         display: "flex",
         flexDirection: "column",
         borderRadius: 2,
+        backgroundColor: "#1e293b",
         transition: "all 0.3s",
         "&:hover": {
           transform: "translateY(-4px)",
-          boxShadow: 6,
+          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
         },
       }}
     >
@@ -105,7 +106,7 @@ const InitiativeCard = ({
           <Typography
             variant="h6"
             fontWeight={700}
-            sx={{ color: "#047857", flexGrow: 1 }}
+            sx={{ color: "#10b981", flexGrow: 1 }}
           >
             {initiative.heading}
           </Typography>
@@ -145,8 +146,7 @@ const InitiativeCard = ({
         >
           <Typography
             variant="body2"
-            color="text.secondary"
-            sx={{ lineHeight: 1.6 }}
+            sx={{ lineHeight: 1.6, color: "#94a3b8" }}
           >
             {initiative.description}
           </Typography>
@@ -155,8 +155,8 @@ const InitiativeCard = ({
         {/* Organizer Info (optional) */}
         {showOrganizer && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <PersonIcon sx={{ fontSize: 16, color: "#6b7280" }} />
-            <Typography variant="caption" color="text.secondary">
+            <PersonIcon sx={{ fontSize: 16, color: "#64748b" }} />
+            <Typography variant="caption" sx={{ color: "#94a3b8" }}>
               Organized by {initiative.createdBy?.name || "Unknown"}
             </Typography>
           </Box>
@@ -165,8 +165,8 @@ const InitiativeCard = ({
         {/* Event Details */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <EventIcon sx={{ fontSize: 18, color: "#047857" }} />
-            <Typography variant="body2" color="text.secondary">
+            <EventIcon sx={{ fontSize: 18, color: "#10b981" }} />
+            <Typography variant="body2" sx={{ color: "#94a3b8" }}>
               {new Date(initiative.eventDate).toLocaleDateString("en-US", {
                 weekday: "short",
                 year: "numeric",
@@ -177,8 +177,8 @@ const InitiativeCard = ({
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <AccessTimeIcon sx={{ fontSize: 18, color: "#0e7490" }} />
-            <Typography variant="body2" color="text.secondary">
+            <AccessTimeIcon sx={{ fontSize: 18, color: "#06b6d4" }} />
+            <Typography variant="body2" sx={{ color: "#94a3b8" }}>
               {new Date(initiative.timeFrom).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -193,7 +193,7 @@ const InitiativeCard = ({
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <PeopleIcon sx={{ fontSize: 18, color: "#10b981" }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: "#94a3b8" }}>
               {initiative.participants.length} / {initiative.upperLimit}{" "}
               participants
             </Typography>
@@ -206,7 +206,7 @@ const InitiativeCard = ({
             sx={{
               mt: 2,
               p: 2,
-              bgcolor: "rgba(239, 68, 68, 0.05)",
+              bgcolor: "rgba(239, 68, 68, 0.15)",
               borderRadius: 1,
               borderLeft: "3px solid #ef4444",
             }}
@@ -220,7 +220,7 @@ const InitiativeCard = ({
             >
               Cancellation Reason:
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: "#fca5a5" }}>
               {initiative.cancellationReason}
             </Typography>
           </Box>
@@ -228,7 +228,7 @@ const InitiativeCard = ({
 
         {/* Action Buttons */}
         {initiative.status === "active" && (
-          <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 1.5 }}>
+          <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #334155", display: "flex", flexDirection: "column", gap: 1.5 }}>
             {onCancel && (
               <Button
                 fullWidth
@@ -291,7 +291,7 @@ const InitiativeCard = ({
         )}
 
         {/* Discussion Forum Button - Always visible */}
-        <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e5e7eb" }}>
+        <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #334155" }}>
           <Button
             fullWidth
             variant="outlined"
@@ -299,11 +299,11 @@ const InitiativeCard = ({
             startIcon={<ForumIcon />}
             onClick={handleDiscussionClick}
             sx={{
-              borderColor: "#0e7490",
-              color: "#0e7490",
+              borderColor: "#06b6d4",
+              color: "#06b6d4",
               "&:hover": {
-                borderColor: "#0891b2",
-                bgcolor: "rgba(14, 116, 144, 0.04)",
+                borderColor: "#22d3ee",
+                bgcolor: "rgba(6, 182, 212, 0.1)",
               },
             }}
           >

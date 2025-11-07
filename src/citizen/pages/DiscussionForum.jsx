@@ -186,7 +186,7 @@ const DiscussionForum = () => {
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ py: 4, display: "flex", justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
-        <CircularProgress sx={{ color: "#047857" }} />
+        <CircularProgress sx={{ color: "#10b981" }} />
       </Container>
     );
   }
@@ -202,6 +202,7 @@ const DiscussionForum = () => {
           background: "linear-gradient(90deg, #047857 0%, #0e7490 100%)",
           color: "white",
           borderRadius: 2,
+          border: "1px solid rgba(255, 255, 255, 0.1)",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -231,7 +232,9 @@ const DiscussionForum = () => {
           display: "flex",
           flexDirection: "column",
           borderRadius: 2,
-          bgcolor: "#f9fafb",
+          bgcolor: "rgba(255, 255, 255, 0.05)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(10px)",
         }}
       >
         <Box
@@ -246,7 +249,7 @@ const DiscussionForum = () => {
               width: "8px",
             },
             "&::-webkit-scrollbar-track": {
-              backgroundColor: "rgba(0, 0, 0, 0.05)",
+              backgroundColor: "rgba(255, 255, 255, 0.05)",
             },
             "&::-webkit-scrollbar-thumb": {
               backgroundColor: "#10b981",
@@ -259,10 +262,10 @@ const DiscussionForum = () => {
         >
           {messages.length === 0 ? (
             <Box sx={{ textAlign: "center", py: 8 }}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography variant="h6" sx={{ color: "#9ca3af" }}>
                 No messages yet
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#9ca3af" }}>
                 Start the conversation!
               </Typography>
             </Box>
@@ -278,11 +281,11 @@ const DiscussionForum = () => {
                       <Typography
                         variant="caption"
                         sx={{
-                          bgcolor: "rgba(0, 0, 0, 0.05)",
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
                           px: 2,
                           py: 0.5,
                           borderRadius: 2,
-                          color: "text.secondary",
+                          color: "#9ca3af",
                         }}
                       >
                         {dateSeparator}
@@ -323,7 +326,7 @@ const DiscussionForum = () => {
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "#047857",
+                            color: "#10b981",
                             fontWeight: 600,
                             mb: 0.5,
                             ml: 1,
@@ -337,8 +340,8 @@ const DiscussionForum = () => {
                         elevation={1}
                         sx={{
                           p: 1.5,
-                          bgcolor: isCurrentUser ? "#047857" : "white",
-                          color: isCurrentUser ? "white" : "text.primary",
+                          bgcolor: isCurrentUser ? "#047857" : "rgba(255, 255, 255, 0.08)",
+                          color: isCurrentUser ? "white" : "#e5e7eb",
                           borderRadius: 2,
                           borderTopLeftRadius: !isCurrentUser ? 0 : 2,
                           borderTopRightRadius: isCurrentUser ? 0 : 2,
@@ -352,7 +355,7 @@ const DiscussionForum = () => {
                       <Typography
                         variant="caption"
                         sx={{
-                          color: "text.secondary",
+                          color: "#9ca3af",
                           mt: 0.5,
                           mx: 1,
                         }}
@@ -364,7 +367,7 @@ const DiscussionForum = () => {
                     {isCurrentUser && (
                       <Avatar
                         sx={{
-                          bgcolor: "#0e7490",
+                          bgcolor: "#10b981",
                           width: 36,
                           height: 36,
                           fontSize: "0.875rem",
@@ -387,8 +390,10 @@ const DiscussionForum = () => {
           onSubmit={handleSendMessage}
           sx={{
             p: 2,
-            bgcolor: "white",
-            borderTop: "1px solid #e5e7eb",
+            bgcolor: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            backdropFilter: "blur(10px)",
+            borderRadius: 2,
           }}
         >
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -402,13 +407,21 @@ const DiscussionForum = () => {
               size="small"
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 3,
+                  borderRadius: 2,
+                  color: "#e5e7eb",
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
                   "&:hover fieldset": {
-                    borderColor: "#10b981",
+                    borderColor: "rgba(255, 255, 255, 0.3)",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#047857",
+                    borderColor: "#10b981",
                   },
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "#9ca3af",
+                  opacity: 1,
                 },
               }}
             />
@@ -418,11 +431,14 @@ const DiscussionForum = () => {
               sx={{
                 bgcolor: "#047857",
                 color: "white",
+                width: "50px",
+                height: "50px",
+                flexShrink: 0,
                 "&:hover": {
                   bgcolor: "#059669",
                 },
                 "&:disabled": {
-                  bgcolor: "rgba(0, 0, 0, 0.12)",
+                  bgcolor: "#e5e7eb",
                 },
               }}
             >
