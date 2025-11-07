@@ -12,7 +12,6 @@ const AuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
 
@@ -34,7 +33,6 @@ const AuthCallback = () => {
         if (data.token) {
           localStorage.setItem("token", data.token);
           const decodedToken = jwtDecode(data.token);
-          console.log("Decoded Token:", decodedToken);
           if (decodedToken.role === UserType.ADMIN) {
             navigate("/admin");
           } else if (decodedToken.role === UserType.NGO) {

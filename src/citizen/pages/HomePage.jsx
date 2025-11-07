@@ -4,6 +4,7 @@ import RecyclingIcon from '@mui/icons-material/Recycling';
 import PeopleIcon from '@mui/icons-material/People';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import NatureIcon from '@mui/icons-material/Nature';
+import { jwtDecode } from 'jwt-decode';
 import HeroSection from '../components/HeroSection';
 import RightCard from '../components/RightCard';
 
@@ -38,7 +39,20 @@ const HomePage = () => {
   ];
 
   useEffect(() => {
-    console.log(decodedToken);
+    // Print JWT token from localStorage
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        console.log('JWT Token:', token);
+        console.log('Decoded JWT:', decodedToken);
+      } catch (error) {
+        console.error('Error decoding JWT:', error);
+      }
+    } else {
+      console.log('No JWT token found in localStorage');
+    }
+
     const interval = setInterval(() => {
       setIsVisible(false);
       
