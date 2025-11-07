@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -6,6 +6,8 @@ import {
   Chip,
   Card,
   CardContent,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -25,6 +27,30 @@ const InitiativeCard = ({
   onLeave,
   onDiscussion,
 }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleDiscussionClick = () => {
+    // Check if drive is cancelled or completed
+    if (initiative.status === "cancelled" || initiative.status === "completed") {
+      setSnackbarMessage("This initiative is now closed");
+      setSnackbarOpen(true);
+      return;
+    }
+
+    // Check if user has joined
+    if (!isJoined && !onCancel) {
+      // If not joined and not the organizer (onCancel means it's the organizer's card)
+      setSnackbarMessage("Only joined members can access the discussion forum");
+      setSnackbarOpen(true);
+    } else {
+      onDiscussion && onDiscussion(initiative._id);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
@@ -271,7 +297,7 @@ const InitiativeCard = ({
             variant="outlined"
             size="small"
             startIcon={<ForumIcon />}
-            onClick={() => onDiscussion && onDiscussion(initiative._id)}
+            onClick={handleDiscussionClick}
             sx={{
               borderColor: "#0e7490",
               color: "#0e7490",
@@ -285,6 +311,21 @@ const InitiativeCard = ({
           </Button>
         </Box>
       </CardContent>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="warning"
+          sx={{ width: "200px" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 };
