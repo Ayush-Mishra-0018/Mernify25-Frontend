@@ -51,7 +51,7 @@ function Navbar() {
   return (
     <AppBar position="static" sx={{ background: 'linear-gradient(90deg, #047857 0%, #0e7490 100%)' }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ minHeight: { xs: '56px', md: '64px' }, py: 0.5 }}>
           {/* Desktop Logo */}
           <Box 
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, cursor: 'pointer' }}
@@ -60,7 +60,7 @@ function Navbar() {
             <img 
               src="/logo.png" 
               alt="EcoSynergy Logo" 
-              style={{ width: '40px', height: '40px' }}
+              style={{ width: '32px', height: '32px' }}
             />
           </Box>
           <Typography
@@ -72,6 +72,7 @@ function Navbar() {
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'Poppins, sans-serif',
               fontWeight: 700,
+              fontSize: '1.1rem',
               letterSpacing: '.1rem',
               color: 'inherit',
               textDecoration: 'none',
@@ -125,7 +126,7 @@ function Navbar() {
             <img 
               src="/logo.png" 
               alt="EcoSynergy Logo" 
-              style={{ width: '35px', height: '35px' }}
+              style={{ width: '28px', height: '28px' }}
             />
           </Box>
           <Typography
@@ -138,6 +139,7 @@ function Navbar() {
               flexGrow: 1,
               fontFamily: 'Poppins, sans-serif',
               fontWeight: 700,
+              fontSize: '1rem',
               letterSpacing: '.1rem',
               color: 'inherit',
               textDecoration: 'none',
@@ -153,7 +155,7 @@ function Navbar() {
               <Button
                 key={page.name}
                 onClick={() => handleNavigation(page.path)}
-                sx={{ my: 2, color: 'white', display: 'block', fontWeight: 500 }}
+                sx={{ my: 1, color: 'white', display: 'block', fontWeight: 500, py: 0.75 }}
               >
                 {page.name}
               </Button>
