@@ -12,6 +12,7 @@ const AuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const decodedToken = jwtDecode(data.token);
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
 

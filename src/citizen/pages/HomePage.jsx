@@ -7,6 +7,11 @@ import NatureIcon from '@mui/icons-material/Nature';
 import HeroSection from '../components/HeroSection';
 import RightCard from '../components/RightCard';
 
+import { jwtDecode } from "jwt-decode";
+
+const decodedToken = jwtDecode(existingToken);
+console.log("Decoded Token:", decodedToken);
+
 const HomePage = () => {
   const words = ['Collaborate', 'Conserve', 'Change', 'Connect'];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -37,6 +42,7 @@ const HomePage = () => {
   ];
 
   useEffect(() => {
+    console.log(decodedToken);
     const interval = setInterval(() => {
       setIsVisible(false);
       

@@ -20,6 +20,7 @@ const Login = () => {
       if (existingToken) {
         try {
           const decodedToken = jwtDecode(existingToken);
+          console.log("Decoded Token:", decodedToken);
           const currentTime = Math.floor(Date.now() / 1000);
           
           // If token is still valid, redirect user
