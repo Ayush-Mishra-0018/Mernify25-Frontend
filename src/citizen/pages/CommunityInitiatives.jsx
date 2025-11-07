@@ -10,6 +10,13 @@ import {
   Card,
   CardContent,
   Avatar,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
 } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -23,6 +30,16 @@ const CommunityInitiatives = () => {
   const [initiatives, setInitiatives] = useState([]);
   const [filter, setFilter] = useState("active");
   const [joinedDrives, setJoinedDrives] = useState(new Set());
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [leaveDialog, setLeaveDialog] = useState({ open: false, driveId: null });
+
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const fetchInitiatives = async () => {
     const token = localStorage.getItem("token");
@@ -65,7 +82,7 @@ const CommunityInitiatives = () => {
   const handleJoinDrive = async (driveId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("You must be logged in to join a drive.");
+      showSnackbar("You must be logged in to join a drive.", "error");
       return;
     }
 
@@ -82,26 +99,28 @@ const CommunityInitiatives = () => {
       );
 
       if (response.ok) {
-        alert("Successfully joined the drive!");
+        showSnackbar("Successfully joined the drive!", "success");
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        alert(`Failed to join drive: ${errorData.message}`);
+        showSnackbar(`Failed to join drive: ${errorData.message}`, "error");
       }
     } catch (error) {
       console.error("Error joining drive:", error);
-      alert("An error occurred while joining the drive.");
+      showSnackbar("An error occurred while joining the drive.", "error");
     }
   };
 
-  const handleLeaveDrive = async (driveId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in.");
-      return;
-    }
+  const handleLeaveDrive = (driveId) => {
+    setLeaveDialog({ open: true, driveId });
+  };
 
-    if (!confirm("Are you sure you want to leave this drive?")) {
+  const confirmLeaveDrive = async () => {
+    const token = localStorage.getItem("token");
+    const { driveId } = leaveDialog;
+
+    if (!token) {
+      showSnackbar("You must be logged in.", "error");
       return;
     }
 
@@ -118,22 +137,24 @@ const CommunityInitiatives = () => {
       );
 
       if (response.ok) {
-        alert("Successfully left the drive.");
+        showSnackbar("Successfully left the drive.", "success");
+        setLeaveDialog({ open: false, driveId: null });
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        alert(`Failed to leave drive: ${errorData.message}`);
+        showSnackbar(`Failed to leave drive: ${errorData.message}`, "error");
       }
     } catch (error) {
       console.error("Error leaving drive:", error);
-      alert("An error occurred while leaving the drive.");
+      showSnackbar("An error occurred while leaving the drive.", "error");
     }
   };
 
   const isJoined = (driveId) => joinedDrives.has(driveId);
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         {/* Header */}
         <Paper
@@ -269,13 +290,35 @@ const CommunityInitiatives = () => {
                       />
                     </Box>
 
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2, lineHeight: 1.6 }}
+                    <Box
+                      sx={{
+                        mb: 2,
+                        maxHeight: "80px",
+                        overflowY: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: "6px",
+                        },
+                        "&::-webkit-scrollbar-track": {
+                          backgroundColor: "rgba(0, 0, 0, 0.05)",
+                          borderRadius: "3px",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#10b981",
+                          borderRadius: "3px",
+                          "&:hover": {
+                            backgroundColor: "#059669",
+                          },
+                        },
+                      }}
                     >
-                      {initiative.description}
-                    </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ lineHeight: 1.6 }}
+                      >
+                        {initiative.description}
+                      </Typography>
+                    </Box>
 
                     {/* Organizer Info */}
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
@@ -321,6 +364,26 @@ const CommunityInitiatives = () => {
                         </Typography>
                       </Box>
                     </Box>
+
+                    {/* Cancellation Reason */}
+                    {initiative.status === "cancelled" && initiative.cancellationReason && (
+                      <Box 
+                        sx={{ 
+                          mt: 2, 
+                          p: 2, 
+                          bgcolor: "rgba(239, 68, 68, 0.05)", 
+                          borderRadius: 1,
+                          borderLeft: "3px solid #ef4444"
+                        }}
+                      >
+                        <Typography variant="caption" color="#ef4444" fontWeight={600} display="block" sx={{ mb: 0.5 }}>
+                          Cancellation Reason:
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {initiative.cancellationReason}
+                        </Typography>
+                      </Box>
+                    )}
 
                     {/* Action Buttons */}
                     {initiative.status === "active" && (
@@ -388,6 +451,54 @@ const CommunityInitiatives = () => {
         )}
       </Box>
     </Container>
+
+    <Snackbar
+      open={snackbar.open}
+      autoHideDuration={6000}
+      onClose={handleCloseSnackbar}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <Alert
+        onClose={handleCloseSnackbar}
+        severity={snackbar.severity}
+        sx={{ width: "100%" }}
+      >
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
+
+    <Dialog open={leaveDialog.open} onClose={() => setLeaveDialog({ open: false, driveId: null })}>
+      <DialogTitle sx={{ background: "linear-gradient(90deg, #047857 0%, #0e7490 100%)", color: "#fff" }}>
+        Leave Drive
+      </DialogTitle>
+      <DialogContent sx={{ mt: 2 }}>
+        <DialogContentText>
+          Are you sure you want to leave this drive? You can rejoin later if needed.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions sx={{ p: 2 }}>
+        <Button
+          onClick={() => setLeaveDialog({ open: false, driveId: null })}
+          sx={{ color: "#6b7280" }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={confirmLeaveDrive}
+          variant="contained"
+          sx={{
+            background: "linear-gradient(90deg, #047857 0%, #0e7490 100%)",
+            color: "#fff",
+            "&:hover": {
+              background: "linear-gradient(90deg, #059669 0%, #0891b2 100%)",
+            },
+          }}
+        >
+          Leave Drive
+        </Button>
+      </DialogActions>
+    </Dialog>
+    </>
   );
 };
 

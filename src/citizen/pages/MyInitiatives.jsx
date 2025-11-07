@@ -10,6 +10,13 @@ import {
   Card,
   CardContent,
   Avatar,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EventIcon from "@mui/icons-material/Event";
@@ -22,6 +29,17 @@ const MyInitiatives = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [cancelDialog, setCancelDialog] = useState({ open: false, driveId: null });
+  const [cancellationReason, setCancellationReason] = useState("");
+
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const fetchInitiatives = async () => {
     const token = localStorage.getItem("token");
@@ -54,7 +72,7 @@ const MyInitiatives = () => {
   const handleLaunchInitiative = async (formData) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("You must be logged in to create an initiative.");
+      showSnackbar("You must be logged in to create an initiative.", "error");
       return;
     }
 
@@ -76,28 +94,30 @@ const MyInitiatives = () => {
 
       if (response.ok) {
         setIsModalOpen(false);
+        showSnackbar("Initiative created successfully!", "success");
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        alert(`Failed to create initiative: ${errorData.message}`);
+        showSnackbar(`Failed to create initiative: ${errorData.message}`, "error");
       }
     } catch (error) {
       console.error("Error launching initiative:", error);
-      alert("An error occurred while launching the initiative.");
+      showSnackbar("An error occurred while launching the initiative.", "error");
     }
   };
 
-  const handleCancelDrive = async (driveId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in.");
-      return;
-    }
+  const handleCancelDrive = (driveId) => {
+    setCancelDialog({ open: true, driveId });
+    setCancellationReason("");
+  };
 
-    const cancellationReason = prompt("Please provide a reason for cancellation (optional):");
-    
-    if (cancellationReason === null) {
-      return; // User clicked cancel on prompt
+  const confirmCancelDrive = async () => {
+    const token = localStorage.getItem("token");
+    const { driveId } = cancelDialog;
+
+    if (!token) {
+      showSnackbar("You must be logged in.", "error");
+      return;
     }
 
     try {
@@ -114,15 +134,17 @@ const MyInitiatives = () => {
       );
 
       if (response.ok) {
-        alert("Drive cancelled successfully.");
+        showSnackbar("Drive cancelled successfully.", "success");
+        setCancelDialog({ open: false, driveId: null });
+        setCancellationReason("");
         fetchInitiatives();
       } else {
         const errorData = await response.json();
-        alert(`Failed to cancel drive: ${errorData.message}`);
+        showSnackbar(`Failed to cancel drive: ${errorData.message}`, "error");
       }
     } catch (error) {
       console.error("Error cancelling drive:", error);
-      alert("An error occurred while cancelling the drive.");
+      showSnackbar("An error occurred while cancelling the drive.", "error");
     }
   };
 
@@ -278,13 +300,35 @@ const MyInitiatives = () => {
                       />
                     </Box>
 
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 3, lineHeight: 1.6 }}
+                    <Box
+                      sx={{
+                        mb: 3,
+                        maxHeight: "80px",
+                        overflowY: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: "6px",
+                        },
+                        "&::-webkit-scrollbar-track": {
+                          backgroundColor: "rgba(0, 0, 0, 0.05)",
+                          borderRadius: "3px",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#10b981",
+                          borderRadius: "3px",
+                          "&:hover": {
+                            backgroundColor: "#059669",
+                          },
+                        },
+                      }}
                     >
-                      {initiative.description}
-                    </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ lineHeight: 1.6 }}
+                      >
+                        {initiative.description}
+                      </Typography>
+                    </Box>
 
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -322,6 +366,26 @@ const MyInitiatives = () => {
                         </Typography>
                       </Box>
                     </Box>
+
+                    {/* Cancellation Reason */}
+                    {initiative.status === "cancelled" && initiative.cancellationReason && (
+                      <Box 
+                        sx={{ 
+                          mt: 2, 
+                          p: 2, 
+                          bgcolor: "rgba(239, 68, 68, 0.05)", 
+                          borderRadius: 1,
+                          borderLeft: "3px solid #ef4444"
+                        }}
+                      >
+                        <Typography variant="caption" color="#ef4444" fontWeight={600} display="block" sx={{ mb: 0.5 }}>
+                          Cancellation Reason:
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {initiative.cancellationReason}
+                        </Typography>
+                      </Box>
+                    )}
 
                     {/* Cancel Button */}
                     {initiative.status === "active" && (
@@ -377,6 +441,62 @@ const MyInitiatives = () => {
         onClose={() => setIsModalOpen(false)}
         onLaunch={handleLaunchInitiative}
       />
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
+      <Dialog open={cancelDialog.open} onClose={() => setCancelDialog({ open: false, driveId: null })}>
+        <DialogTitle sx={{ background: "linear-gradient(90deg, #047857 0%, #0e7490 100%)", color: "#fff" }}>
+          Cancel Drive
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Please provide a reason for cancellation (optional):
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={3}
+            value={cancellationReason}
+            onChange={(e) => setCancellationReason(e.target.value)}
+            placeholder="Enter cancellation reason..."
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setCancelDialog({ open: false, driveId: null })}
+            sx={{ color: "#6b7280" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmCancelDrive}
+            variant="contained"
+            sx={{
+              background: "linear-gradient(90deg, #047857 0%, #0e7490 100%)",
+              color: "#fff",
+              "&:hover": {
+                background: "linear-gradient(90deg, #059669 0%, #0891b2 100%)",
+              },
+            }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
