@@ -19,10 +19,7 @@ const Login = () => {
       const existingToken = localStorage.getItem("token");
       if (existingToken) {
         try {
-          const decodedToken = jwtDecode(existingToken);
-          console.log("Decoded Token:", decodedToken);
           const currentTime = Math.floor(Date.now() / 1000);
-          
           // If token is still valid, redirect user
           if (decodedToken.exp > currentTime) {
             if (decodedToken.role === UserType.ADMIN) {
@@ -56,7 +53,6 @@ const Login = () => {
           
           // Decode the new token to determine user type
           const decodedToken = jwtDecode(data.token);
-          console.log("Decoded Token:", decodedToken);
           if (decodedToken.role === UserType.ADMIN) {
             navigate("/admin");
           } else if (decodedToken.role === UserType.NGO) {
