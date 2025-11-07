@@ -294,7 +294,7 @@ const ImpactBoard = () => {
         sx={{
           p: 2,
           mb: 3,
-          background: "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%)",
+          background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)",
           color: "white",
           borderRadius: 2,
           border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -305,7 +305,7 @@ const ImpactBoard = () => {
             <IconButton onClick={() => navigate(-1)} sx={{ color: "white" }}>
               <ArrowBackIcon />
             </IconButton>
-            <Avatar sx={{ bgcolor: "#7c3aed" }}>
+            <Avatar sx={{ bgcolor: "#059669" }}>
               <EmojiEventsIcon />
             </Avatar>
             <Box>
@@ -381,12 +381,12 @@ const ImpactBoard = () => {
         sx={{
           p: 3,
           bgcolor: "rgba(255, 255, 255, 0.05)",
-          border: focusedFields.summary ? "2px solid #8b5cf6" : "1px solid rgba(255, 255, 255, 0.1)",
+          border: focusedFields.summary ? "2px solid #10b981" : "1px solid rgba(255, 255, 255, 0.1)",
           backdropFilter: "blur(10px)",
           borderRadius: 2,
         }}
       >
-        <Typography variant="h6" fontWeight={700} sx={{ color: "#8b5cf6", mb: 2 }}>
+        <Typography variant="h6" fontWeight={700} sx={{ color: "#10b981", mb: 2 }}>
           {focusedFields.summary ? `Impact Summary (${focusedFields.summary.userName} is editing...)` : "Impact Summary (Collaborative)"}
         </Typography>
         <TextField
@@ -410,7 +410,7 @@ const ImpactBoard = () => {
                 borderColor: "rgba(255, 255, 255, 0.3)",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "#8b5cf6",
+                borderColor: "#10b981",
               },
             },
             "& .MuiInputBase-input::placeholder": {
