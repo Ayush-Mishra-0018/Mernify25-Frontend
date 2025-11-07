@@ -1,13 +1,18 @@
-import { useState } from 'react'
+import {
+  Route,
+  RouterProvider,
+  createRoutesFromElements,
+  createBrowserRouter,
+} from "react-router-dom";
 
-function App() {
+// Context
 
+// Citizen pages
+
+
+const App = () => {
   return (
-    <>
-      <div className="bg-blue-500 text-white p-4 rounded-lg text-center">
-        Hello Tailwind!
-      </div>
-    </>
+    <div>App</div>
   )
 }
 
