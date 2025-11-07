@@ -12,12 +12,13 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { handleLogout } from '../../login/logout';
 
 const pages = [
   { name: 'Home', path: '/' },
   { name: 'AI Chat', path: '/eco-bot' }
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Logout'];
 
 function Navbar() {
   const navigate = useNavigate();
@@ -37,6 +38,13 @@ function Navbar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleSettingClick = (setting) => {
+    handleCloseUserMenu();
+    if (setting === 'Logout') {
+      handleLogout();
+    }
   };
 
   const handleNavigation = (path) => {
@@ -186,7 +194,7 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
                   <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
               ))}
