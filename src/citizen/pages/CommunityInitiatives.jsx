@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -21,6 +22,7 @@ import InitiativeCard from "../components/InitiativeCard";
 import { useSocket } from "../../context/SocketContext";
 
 const CommunityInitiatives = () => {
+  const navigate = useNavigate();
   const socket = useSocket();
   const [initiatives, setInitiatives] = useState([]);
   const [filter, setFilter] = useState("active");
@@ -206,7 +208,7 @@ const CommunityInitiatives = () => {
 
   const handleDiscussionForum = (driveId) => {
     // Navigate to discussion forum page
-    window.location.href = `/citizen/discussion/${driveId}`;
+    navigate(`/discussion/${driveId}`);
   };
 
   const isJoined = (driveId) => joinedDrives.has(driveId);

@@ -13,6 +13,7 @@ import HomePage from "./citizen/pages/HomePage.jsx";
 import AIChatPage from "./citizen/pages/AIChatPage.jsx";
 import MyInitiatives from "./citizen/pages/MyInitiatives.jsx";
 import CommunityInitiatives from "./citizen/pages/CommunityInitiatives.jsx";
+import DiscussionForum from "./citizen/pages/DiscussionForum.jsx";
 
 // for login
 import Login from "./login/Login";
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="eco-bot" element={<AIChatPage />} />
             <Route path="my-initiatives" element={<MyInitiatives />} />
             <Route path="community-initiatives" element={<CommunityInitiatives />} />
+            <Route path="discussion/:driveId" element={<DiscussionForum />} />
           </Route>
         </Route>
 

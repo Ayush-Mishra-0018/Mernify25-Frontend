@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -23,6 +24,7 @@ import InitiativeCard from "../components/InitiativeCard";
 import { useSocket } from "../../context/SocketContext";
 
 const MyInitiatives = () => {
+  const navigate = useNavigate();
   const socket = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
@@ -193,7 +195,7 @@ const MyInitiatives = () => {
 
   const handleDiscussionForum = (driveId) => {
     // Navigate to discussion forum page
-    window.location.href = `/citizen/discussion/${driveId}`;
+    navigate(`/discussion/${driveId}`);
   };
 
   return (
