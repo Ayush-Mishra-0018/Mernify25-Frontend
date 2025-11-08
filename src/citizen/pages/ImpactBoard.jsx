@@ -227,6 +227,41 @@ const ImpactBoard = () => {
     setFinishing(true);
 
     try {
+      // Step 1: Call Gemini API directly from frontend to generate summary
+      const systemPrompt = `You are a summarizer for environmental and community initiatives. 
+      
+      Below is a collaborative impact summary written by multiple participants of a community initiative titled "${driveData.heading}":
+      
+      "${impactData.summary}"
+      
+      Make it concise, inspiring, and professional. Ignore any gibberish remarks. Keep it under 100 words.`;
+
+      const geminiResponse = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: systemPrompt }],
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!geminiResponse.ok) {
+        const geminiError = await geminiResponse.json();
+        throw new Error(geminiError.error?.message || "Failed to generate AI summary");
+      }
+
+      const geminiData = await geminiResponse.json();
+      const aiResult = geminiData.candidates[0].content.parts[0].text.replace(/\*\*/g, "");
+
+      // Step 2: Send the AI-generated result to backend to save
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/user/finishImpactBoard/${driveId}`,
         {
@@ -235,6 +270,7 @@ const ImpactBoard = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify({ result: aiResult }),
         }
       );
 
