@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -6,6 +6,9 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 const HeroSection = ({ words, currentWordIndex, isVisible }) => {
   const [stats, setStats] = useState({ total: 0, completed: 0, active: 0 });
   const [loading, setLoading] = useState(true);
+  const [displayCount, setDisplayCount] = useState(0);
+  const rafRef = useRef(null);
+  const prevCountRef = useRef(0);
 
   useEffect(() => {
     fetchStats();
@@ -24,6 +27,45 @@ const HeroSection = ({ words, currentWordIndex, isVisible }) => {
       setLoading(false);
     }
   };
+
+  // Animate the displayed completed count from previous value (or 0) to the new stats.completed
+  useEffect(() => {
+    const to = Number(stats?.completed ?? 0);
+    const from = Number(prevCountRef.current ?? 0);
+
+    // If same value, just set it and exit
+    if (from === to) {
+      setDisplayCount(to);
+      prevCountRef.current = to;
+      return;
+    }
+
+    const duration = 1200; // animation duration in ms
+    const startTime = performance.now();
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    const step = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(t);
+      const current = Math.round(from + (to - from) * eased);
+      setDisplayCount(current);
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        prevCountRef.current = to;
+      }
+    };
+
+    // start animation
+    rafRef.current = requestAnimationFrame(step);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [stats?.completed]);
+
   
   return (
     <Box sx={{ flex: 1 }}>
@@ -101,7 +143,7 @@ const HeroSection = ({ words, currentWordIndex, isVisible }) => {
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  {stats.completed}
+                  {new Intl.NumberFormat().format(displayCount)}
                 </Typography>
                 <Typography 
                   variant="body1" 
