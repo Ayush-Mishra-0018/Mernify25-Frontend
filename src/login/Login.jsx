@@ -67,8 +67,7 @@ const Login = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-gray-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-400 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-300">Authenticating...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-400 border-t-transparent mx-auto mb-4"></div>        
         </div>
       </div>
     );
@@ -90,7 +89,7 @@ const Login = () => {
   {/* Main Content Card */}
   <div className="relative z-10 max-w-md w-full flex flex-col gap-6">
         <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50">
-          <div className="p-6 md:p-8 flex flex-col items-center gap-6">
+          <div className="px-6 md:p-8 flex flex-col items-center gap-6">
           
           {/* Logo/Icon Section */}
           <div className="flex justify-center">
@@ -134,7 +133,7 @@ const Login = () => {
           {/* Login Button */}
           <button
             onClick={handleLogin}
-            className="w-full bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 group text-lg leading-normal min-h-[52px]"
+            className="bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 group text-lg leading-normal min-h-[52px] w-[400px]"
           >
             <img src="/google.png" alt="Google" className="w-6 h-6" />
             <span>Continue with Google</span>
@@ -155,7 +154,7 @@ const Login = () => {
           <p className="text-center text-sm text-gray-300">
             Join thousands making a difference for our planet 🌍
           </p>
-          Reduce • Reuse • Recycle • Renew
+          Reduce • Reuse• Renew • Recycle
         </div>
       </div>
     </div>
