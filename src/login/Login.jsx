@@ -100,7 +100,7 @@ const Login = () => {
           </div>
 
           {/* Title Section */}
-          <div className="text-center flex flex-col gap-1.5">
+          <div className="text-center flex flex-col gap-2">
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-400 via-emerald-500 to-teal-400 bg-clip-text text-transparent">
               EcoSynergy
             </h1>

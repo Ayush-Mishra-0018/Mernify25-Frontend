@@ -17,6 +17,13 @@ import DiscussionForum from "./citizen/pages/DiscussionForum.jsx";
 import ImpactBoard from "./citizen/pages/ImpactBoard.jsx";
 import ViewSummary from "./citizen/pages/ViewSummary.jsx";
 
+// NGO layout
+import NGOLayout from "./ngo/layouts/NGOLayout.jsx";
+
+// NGO pages
+import LaunchInitiative from "./ngo/pages/LaunchInitiative.jsx";
+import ViewInitiatives from "./ngo/pages/ViewInitiatives.jsx";
+
 // for login
 import Login from "./login/Login";
 import AuthCallback from "./login/AuthCallback";
@@ -26,6 +33,7 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+       {/* Citizen Routes */}
        <Route element={<ProtectedRoute citizenOnly={true} />}>
           <Route path="/" element={<CitizenLayout />}>
             <Route index element={<HomePage />} />
@@ -38,6 +46,16 @@ const App = () => {
           </Route>
         </Route>
 
+       {/* NGO Routes */}
+       <Route element={<ProtectedRoute ngoOnly={true} />}>
+          <Route path="/ngo" element={<NGOLayout />}>
+            <Route index element={<ViewInitiatives />} />
+            <Route path="launch" element={<LaunchInitiative />} />
+            <Route path="initiatives" element={<ViewInitiatives />} />
+          </Route>
+        </Route>
+
+       {/* Public Routes */}
        <Route path="/login" element={<Login />} />
        <Route path="/auth/callback" element={<AuthCallback />} />
 
